@@ -1,0 +1,45 @@
+flowchart TD
+    subgraph Initialization ["1. Initialization Phase"]
+        A[Main Entry Point] --> B[Create LLM Client]
+        A --> C[Instantiate Tools]    
+        A --> D[Initialize BaseAgent]
+        D --> E[Register Tools in Registry]
+    end
+
+    subgraph Execution_Loop ["2. Execution Loop"]
+        F[User Input] --> G[Update Memories]
+        G --> H{Iteration Loop}    
+        H --> I[Gather Full Context]
+        I --> J[Call LLM API]
+        J --> K{Response contains<br/>TOOL Call?}
+        
+        K -- Yes --> L[Parse TOOL and INPUT]
+        L --> M[Execute Tool via Registry]    
+        M --> N[Log Result to Memory<br/>role: tool]
+        N --> H
+        
+        K -- No --> O[Final Output]   
+    end
+
+    subgraph Tool_Execution ["3. Tool Execution Logic"]
+        M --> T1[Extract TOOL_NAME]
+        T1 --> T2[Extract INPUT_VALUE]
+        T2 --> T3[Invoke tool.run]
+        T3 --> T4[Return Formatted Result]
+    end
+
+    subgraph OOP_Structure ["4. OOP Principles & Architecture"]
+        direction LR
+        P[BaseLLM Interface] --- Q[GroqClient]
+        P --- R[GeminiClient]
+        
+        S[BaseAgent] --- T[ToolRegistry]
+        S --- U[Memory Systems]
+        S --- V[Config]
+    end
+
+    %% Styling
+    style S fill:#f9f,stroke:#333,stroke-width:2px
+    style J fill:#bbf,stroke:#333,stroke-width:2px
+    style O fill:#bfb,stroke:#333,stroke-width:2px
+    style K fill:#fff4dd,stroke:#d4a017,stroke-width:2px

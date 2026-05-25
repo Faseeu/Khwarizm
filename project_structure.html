@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professional Project Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; color: #333; padding: 40px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .mermaid { margin-top: 30px; background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Khwarizm Architecture Map</h1>
+        <p>A detailed overview of the system components and their interdependencies.</p>
+        <div class="mermaid">
+        graph TB
+            subgraph Entry
+                M[main.py]
+            end
+            subgraph Agent_Layer
+                A[BaseAgent]
+                C[Config]
+                Mem[Memory System]
+            end
+            subgraph Tool_System
+                TR[Tool Registry]
+                ST[Standard Tools]
+                AM[Agent-Made Tools]
+            end
+            M --> A
+            A --> C
+            A --> Mem
+            A --> TR
+            TR --> ST
+            TR --> AM
+            style M fill:#f9f9f9,stroke:#333
+            style A fill:#3498db,color:#fff
+            style TR fill:#e67e22,color:#fff
+        </div>
+    </div>
+    <script>mermaid.initialize({startOnLoad:true, theme: 'default'});</script>
+</body>
+</html>
