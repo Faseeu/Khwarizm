@@ -1,10 +1,8 @@
 # Project Context Analysis
 
-
+```
 KHWARIZM PROJECT HIERARCHY (Tree View)
 ========================================
-
-.
 ├── main.py (Entry Point)
 ├── README.md
 ├── requirements.txt
@@ -34,7 +32,7 @@ KHWARIZM PROJECT HIERARCHY (Tree View)
 ├── utils/
 │   └── chat_ui.py
 └── tests/
-
+```
 
 
 ## File: filewriter.py
