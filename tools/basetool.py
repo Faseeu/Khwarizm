@@ -8,10 +8,10 @@ class BaseTool(ABC):
         parameters: dict={}
 
 
-        @abstractmethod
-        def run(self, parameters: dict) -> str:
-            """The method called by the agent to run a tool"""
-            pass
+    @abstractmethod
+    def run(self, parameters: dict) -> str:
+        """The method called by the agent to run a tool"""
+        pass
 
 
     def get_schema(self) -> str:
