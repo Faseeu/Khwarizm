@@ -3,3 +3,4 @@ venv/
 *.txt
 .env
 __pycache__/
+*.json
