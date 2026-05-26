@@ -18,17 +18,17 @@ class LongTermMemory(BaseMemory):
         if len(self.__history) > self.__max_entries:
             self.__history = self.__history[-self.__max_entries:]
 
-            
+
         self.__save_to_file()
     
     def get_context(self) -> str:
         if not self.__history:
             return ""
         
-        context = ""
-        for entry in self.__history:
-            context += f"{entry['role']}: {entry['content']}\n"
-        return context
+        return "".join([
+            f"{entry['role']}: {entry['content']}\n"
+        for entry in self.__history
+        ])
     
     def clear(self):
         self.__history = []
