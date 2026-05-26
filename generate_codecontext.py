@@ -11,7 +11,7 @@ def generate_context() -> None:
     
     ignore_dirs: Set[str] = {
         '__pycache__', 'tests', 'venv', '.venv', '.git', 
-        '.env', '.ephemeral_venv', '.temp_venv', '.idea', '.vscode'
+        '.env', '.ephemeral_venv', '.temp_venv', '.idea', '.vscode','.agent_projects'
     }
     ignore_files: Set[str] = {
         'codecontext.md',
