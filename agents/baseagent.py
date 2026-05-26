@@ -146,9 +146,16 @@ class BaseAgent:
              # Save to both memories
             self.__short_term.add_entry(role="assistant", content=response)
             self.__long_term.add_entry(role="assistant", content=response)
-
+            
             return response if response else "Error: Agent reached max iterations without a final answer."
-
+    def __repr__(self) -> str:
+                return (
+                    f"BaseAgent(name='{self.name}', "
+                    f"tools={self.tools}, "
+                    f"stm={self.__short_term}, "
+                    f"ltm={self.__long_term})"
+                )
+    
     def __handle_tool_call(self, response: str) -> str:
         try:
             start = response.find("<tool_use>")
