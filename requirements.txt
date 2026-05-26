@@ -1,2 +1,4 @@
 groq
 google-generativeai
+python-minifier 
+minify-html
