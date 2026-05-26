@@ -86,8 +86,8 @@ if __name__ == "__main__":
         name="Agent1",
         llm=llm,
         system_prompt="You are a helpful assistant. Always use tools for math and files. Always use tools. Never try to solve any math eq internally",
-        # tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool(),ProjectRunnerTool()]
-        tools=[CalculatorTool(),ProjectRunnerTool(),FileReaderTool()]
+        tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool()]
+        # tools=[CalculatorTool(),ProjectRunnerTool(),FileReaderTool()]
     )
 
     # Test multi-parameter tool call

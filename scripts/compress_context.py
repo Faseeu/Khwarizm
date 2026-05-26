@@ -32,7 +32,7 @@ def optimize_html_rust(source_code: str) -> str:
     except Exception:
         return source_code
 
-def compress_text_file(input_path_str: str = "codecontext.md") -> None:
+def compress_text_file(input_path_str: str = "docs/codecontext.md") -> None:
     input_path = Path(input_path_str)
     
     if not input_path.is_file():
