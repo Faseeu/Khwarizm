@@ -4,4 +4,4 @@ class BaseLLM(ABC):
     
     @abstractmethod
     def generate(self, system_prompt, user_prompt) ->str:
-        raise NotImplementedError
+        pass
