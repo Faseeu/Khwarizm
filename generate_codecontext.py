@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict, List, Set
 
 def generate_context() -> None:
-    
+    output_file = Path("codecontext.md")
     project_root = Path(".")
     
     # --- CONFIGURATION & SAFETY SAFETY VALVES ---
