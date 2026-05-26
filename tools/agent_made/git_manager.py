@@ -2,12 +2,12 @@ from tools.basetool import BaseTool
 import subprocess
 
 class GitManagerTool(BaseTool):
-    def __init__(self):
-        self.name = "git_manager"
-        self.description = "Provides a safe interface to run 'git status' or 'git log' to track project changes."
-        self.parameters = {
-            "command": "The git command to execute (e.g., 'status', 'log -n 5')."
-        }
+
+    name = "git_manager"
+    description = "Provides a safe interface to run 'git status' or 'git log' to track project changes."
+    parameters = {
+        "command": "The git command to execute (e.g., 'status', 'log -n 5')."
+    }
 
     def run(self, parameters: dict) -> str:
         cmd_arg = parameters.get("command", "status")

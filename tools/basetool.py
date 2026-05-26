@@ -10,7 +10,16 @@ class BaseTool(ABC):
 
     @abstractmethod
     def run(self, parameters: dict) -> str:
-        """The method called by the agent to run a tool"""
+        """
+        Execute the tool with the given parameters.
+        
+        Args:
+            parameters: Dict of parameter names to values.
+                        Keys must match what's defined in self.parameters.
+        
+        Returns:
+            Result string. Always returns a string, never raises.
+        """
         pass
 
 
@@ -27,3 +36,6 @@ class BaseTool(ABC):
             f"  <parameters>{params_xml}\n  </parameters>\n"
             f"</tool>"
         )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(name='{self.name}')"

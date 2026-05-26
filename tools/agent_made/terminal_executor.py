@@ -2,12 +2,12 @@ from tools.basetool import BaseTool
 import subprocess
 
 class TerminalExecutorTool(BaseTool):
-    def __init__(self):
-        self.name = "terminal_executor"
-        self.description = "Executes shell commands after explicit user confirmation."
-        self.parameters = {
+  
+    name = "terminal_executor"
+    description = "Executes shell commands after explicit user confirmation."
+    parameters = {
             "command": "The shell command to be executed."
-        }
+    }
 
     def run(self, parameters: dict) -> str:
         command = parameters.get("command", "")

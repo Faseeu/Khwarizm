@@ -4,12 +4,12 @@ import os
 import shutil
 
 class LightPythonRunnerTool(BaseTool):
-    def __init__(self):
-        self.name = "light_python_runner"
-        self.description = "Executes python files in a clean, ephemeral virtual environment that is deleted immediately after execution."
-        self.parameters = {
-            "filepath": "The path to the python file to execute."
-        }
+
+    name = "light_python_runner"
+    description = "Executes python files in a clean, ephemeral virtual environment that is deleted immediately after execution."
+    parameters = {
+        "filepath": "The path to the python file to execute."
+    }
 
     def run(self, parameters: dict) -> str:
         filepath = parameters.get("filepath", "")
