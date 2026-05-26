@@ -41,7 +41,7 @@ from utils.chat_ui import start_terminal_chat
 #     # print("--- AGENT INFO ---")
 #     # print(f"Name: {agent.name}")                
 #     # print(f"Tools: {agent.tools}")     
-#     # print(f"Prompt: {agent.system_prompt}")      
+#     #       
 
 
 
@@ -51,7 +51,7 @@ from tools.filewriter import FileWriterTool
 from tools.filereader import FileReaderTool
 from agents.baseagent import BaseAgent
 from tools.agent_made.terminal_executor import TerminalExecutorTool
-from tools.in_beta.project_runner import ProjectRunnerTool
+# from tools.in_beta import ProjectRunnerTool
 
 if __name__ == "__main__":
     
@@ -72,9 +72,9 @@ if __name__ == "__main__":
     # what command is going to be ran 
     # and ask him yes for y and no for n
     # """)
-    start_terminal_chat(agent)
-
-    print("\nFinal Answer:")
+    # start_terminal_chat(agent)
+    print(f"Prompt: {agent.system_prompt}")
+    # print("\nFinal Answer:")
     # print(response)
 
 

@@ -191,6 +191,85 @@ class Config:
             raise ValueError("max_stm_entries must be greater than 0")
 ```
 </file>
+## File: `docs/codecontext.min.md`
+<file path="docs/codecontext.min.md" type="markdown">
+```markdown
+// [SYSTEM WARNING: File content truncated. Exceeds safely limit of 200 KB]
+```
+</file>
+## File: `docs/project_structure.txt`
+<file path="docs/project_structure.txt" type="text">
+```text
+KHWARIZM PROJECT HIERARCHY (Tree View)
+========================================
+.
+├── main.py (Entry Point)
+├── README.md
+├── requirements.txt
+├── report.md (Summary Report)
+├── project_graph.mermaid (Graph Data)
+├── agents/
+│   ├── baseagent.py (ReAct Loop)
+│   └── config.py (Dataclass)
+├── llms/
+│   └── geminiclient.py
+├── memory/
+│   ├── basememory.py
+│   ├── stm.py
+│   └── ltm.py
+├── tools/
+│   ├── basetool.py (Abstract Interface)
+│   ├── registry.py (Tool Management)
+│   ├── calculator.py
+│   ├── filewriter.py
+│   ├── filereader.py
+│   └── agent_made/ (Custom Tools)
+│       ├── terminal_executor.py
+│       ├── git_manager.py
+│       ├── light_python_runner.py
+│       └── directory_watcher.py
+├── utils/
+│   └── chat_ui.py
+└── tests/
+```
+</file>
+## File: `docs/report.md`
+<file path="docs/report.md" type="markdown">
+```markdown
+# Project Structure and Files Report
+This report documents the current state of the Khwarizm project as of the latest file scan.
+## Directory Structure
+### Root Directory
+- **main.py**: Entry point of the application.
+- **README.md**: Project documentation and overview.
+- **workflow.py**: Project workflow configuration.
+- **requirements.txt**: Dependencies.
+- **architecture_flow.mermaid**: Visual representation of the agent architecture.
+- **SmartBot_memory.json**, **Agent1_memory.json**: Long-term memory storage files.
+- **create_directory.py**: Utility for directory management.
+- **doc.html**: Documentation file.
+- **.venv/**: Virtual environment directory.
+- **llms/**: Contains LLM client implementations (e.g., `geminiclient.py`).
+- **utils/**: Utility scripts, including `chat_ui.py`.
+- **agents/**: Core agent logic (`baseagent.py`, `config.py`).
+- **memory/**: Memory system modules (`basememory.py`, `stm.py`, `ltm.py`).
+- **tests/**: Test suite.
+- **tools/**: Core tool definitions and custom tool subdirectories.
+### Tools Directory
+The `tools/` directory is organized into base tools and agent-created extensions:
+- **basetool.py**: Abstract base class for all tools.
+- **registry.py**: Tool registration system.
+- **calculator.py**, **filewriter.py**, **filereader.py**: Standard tools.
+- **agent_made/**: Contains tools created during the session.
+    - **terminal_executor.py**: Secure terminal execution tool.
+    - **git_manager.py**: Git status/log management.
+    - **light_python_runner.py**: Ephemeral python execution script.
+    - **directory_watcher.py**: Directory navigation utility.
+    - **potential_tools.txt**: List of future tool ideas.
+## Current Configuration
+The system is integrated within `main.py`, importing all tools from `tools/` and `tools/agent_made/` and registering them with the `BaseAgent` instance.
+```
+</file>
 ## File: `llms/__init__.py`
 <file path="llms/__init__.py" type="python">
 ```python
@@ -357,6 +436,80 @@ class ShortTermMemory(BaseMemory):
         self.__history = []
 ```
 </file>
+## File: `skills/llm_client_skill.md`
+<file path="skills/llm_client_skill.md" type="markdown">
+```markdown
+# Guide to Creating LLM Clients for the Khwarizm Architecture
+To create a functional LLM client that integrates with the existing system, you must inherit from the `BaseLLM` abstract class and adhere to the following requirements:
+## 1. Class Structure
+Every LLM client must be implemented as a class that inherits from `BaseLLM` (located in `llms/basellm.py`). This ensures compatibility with the agent's LLM orchestration.
+## 2. Interface Requirements
+Each client must implement:
+- **`__init__`**: Handle secure credential retrieval (e.g., from environment variables) and SDK initialization.
+- **`generate(system_prompt: str, user_prompt: str) -> str`**: The core method that maps the agent's inputs to the specific provider's API request format.
+## 3. Integration
+1. Define the class in the `llms/` directory.
+2. Ensure the class overrides the abstract methods defined in `BaseLLM`.
+3. Use standard error handling to ensure failures return a descriptive string rather than crashing the execution flow.
+## 4. Execution Protocol
+Clients must be stateless. They are initialized once and utilized for message generation based on the current context provided by the agent.
+# Example: Building an LLM Client
+To create an LLM client, follow this pattern:
+1. **Inheritance**: Inherit from `BaseLLM`.
+2. **Implementation**:
+```python
+import os
+from llms.basellm import BaseLLM
+class ExampleLLMClient(BaseLLM):
+    def __init__(self):
+        self.api_key = os.environ.get("EXAMPLE_API_KEY")
+        # Initialize your SDK here
+    def generate(self, system_prompt: str, user_prompt: str) -> str:
+        try:
+            # Construct payload and call provider API
+            return "Generated response from LLM"
+        except Exception as e:
+            return f"Error: LLM provider failed: {str(e)}"
+```
+This pattern ensures that the system remains extensible to any LLM provider while maintaining a strict, predictable interface.
+```
+</file>
+## File: `skills/toolSkill.md`
+<file path="skills/toolSkill.md" type="markdown">
+```markdown
+# Guide to Creating Tools for the Khwarizm Architecture
+To create a functional tool within this system, you must adhere to the following architectural requirements:
+## 1. Class Structure
+Every tool must be implemented as a class that encapsulates its functionality. Ensure it follows the established patterns of the existing toolset to maintain compatibility with the agent's dispatch mechanism.
+## 2. Interface Requirements
+Each tool must provide:
+- A `description` of its capabilities.
+- Defined `parameters` that the agent can parse.
+- A logic block that accepts inputs and returns outputs in a predictable format.
+## 3. Integration
+For a new tool to be accessible by the agent:
+1. Define the tool class in the appropriate directory (e.g., `tools/agent_made/`).
+2. Update `main.py` (or the central entry point) to import the new class.
+3. Register the tool instance within the agent's initialized tool list.
+## 4. Execution Protocol
+Tools must be designed for single-purpose execution per request. They should prioritize safety, logging, and error handling to prevent environment corruption.
+# Example: Building a Tool
+To create a tool, follow this pattern:
+1. **Define the Class**: Create a Python file in `tools/agent_made/`.
+2. **Logic Implementation**:
+```python
+class ExampleTool:
+    def __init__(self):
+        self.name = "example_tool"
+        self.description = "A brief description of what this tool does."
+    def execute(self, parameter):
+        # Implementation logic here
+        return f"Processed: {parameter}"
+```
+3. **Registering**: Import into `main.py` and add to the `tools` list initialized in the agent.
+This keeps the architecture modular and scalable.
+```
+</file>
 ## File: `tools/agent_made/__init__.py`
 <file path="tools/agent_made/__init__.py" type="python">
 ```python
@@ -481,6 +634,7 @@ from tools.calculator import CalculatorTool
 from tools.registry import ToolRegistry
 from tools.filereader import FileReaderTool
 from tools.filewriter import FileWriterTool
+from in_beta import ProjectRunnerTool, InprocessPythonRunnerTool
 ```
 </file>
 ## File: `tools/basetool.py`
@@ -609,13 +763,6 @@ class ToolRegistry:
         return list(self.__tools.keys())
 ```
 </file>
-## File: `tools/s.txt`
-<file path="tools/s.txt" type="text">
-```text
-git config --global user.email "faseuu@gmail.com"
-git config --global user.name "Faseeu"
-```
-</file>
 ## File: `utils/chat_ui.py`
 <file path="utils/chat_ui.py" type="python">
 ```python
@@ -631,112 +778,6 @@ def start_terminal_chat(agent):
             break
         response = agent.run(user_input)
         print(f"\n{agent.name}: {response}")
-```
-</file>
-## File: `__init__.py`
-<file path="__init__.py" type="python">
-```python
-
-```
-</file>
-## File: `generate_codecontext.py`
-<file path="generate_codecontext.py" type="python">
-```python
-import datetime
-from pathlib import Path
-from typing import Dict, List, Set
-def generate_context() -> None:
-    output_file = Path("codecontext.md")
-    project_root = Path(".")
-    # --- CONFIGURATION & SAFETY SAFETY VALVES ---
-    MAX_FILE_SIZE_BYTES = 200 * 1024  # 200 KB individual file ceiling guard
-    ignore_dirs: Set[str] = {
-        '__pycache__', 'tests', 'venv', '.venv', '.git', 
-        '.env', '.ephemeral_venv', '.temp_venv', '.idea', '.vscode'
-    }
-    ignore_files: Set[str] = {
-        'codecontext.md',
-        'context.md',
-        'Agent1_memory.json'
-    }
-    allowed_extensions: Set[str] = {'.py', '.md', '.txt', '.html', '.yaml', '.yml'}
-    lang_mapping: Dict[str, str] = {
-        '.py': 'python', '.html': 'html', '.md': 'markdown',
-        '.json': 'json', '.yaml': 'yaml', '.yml': 'yaml'
-    }
-    # Reporting Metrics
-    total_files_scanned = 0
-    total_lines_scanned = 0
-    truncated_files_count = 0
-    tree_lines: List[str] = ["# Project Architecture\n\n```text\n"]
-    context_lines: List[str] = ["\n# Source Code Deep-Dive\n\n"]
-    # --- RECURSIVE ENGINE WITH TIMESTAMPS & SIZE CHECKS ---
-    def build_tree(dir_path: Path, prefix: str = "") -> None:
-        nonlocal total_files_scanned, total_lines_scanned, truncated_files_count
-        try:
-            entries = sorted(
-                [e for e in dir_path.iterdir() if e.name not in ignore_dirs and not e.name.startswith('.')],
-                key=lambda e: (e.is_file(), e.name.lower())
-            )
-        except PermissionError:
-            return
-        for i, entry in enumerate(entries):
-            is_last = (i == len(entries) - 1)
-            connector = "└── " if is_last else "├── "
-            # Fetch last modified timestamp dynamically
-            mtime = entry.stat().st_mtime
-            timestamp = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
-            if entry.is_dir():
-                tree_lines.append(f"{prefix}{connector}{entry.name}/ [{timestamp}]\n")
-                next_prefix = prefix + ("    " if is_last else "│   ")
-                build_tree(entry, next_prefix)
-            elif entry.is_file():
-                file_size_kb = entry.stat().st_size / 1024
-                tree_lines.append(f"{prefix}{connector}{entry.name} ({file_size_kb:.1f} KB) [{timestamp}]\n")
-                # Content Processing Block
-                if entry.suffix in allowed_extensions and entry.name not in ignore_files:
-                    total_files_scanned += 1
-                    lang = lang_mapping.get(entry.suffix, 'text')
-                    # Structural Markdown Title
-                    context_lines.append(f"## File: `{entry.as_posix()}`\n")
-                    context_lines.append(f"**Last Modified:** `{timestamp}` | **Size:** `{file_size_kb:.2f} KB`\n\n")
-                    # AI-Directives: XML opening anchor tags for crisp context parsing
-                    context_lines.append(f'<file path="{entry.as_posix()}" type="{lang}">\n```{lang}\n')
-                    # Enforce Maximum File Size Limit Guard
-                    if entry.stat().st_size > MAX_FILE_SIZE_BYTES:
-                        context_lines.append(f"// [SYSTEM WARNING: File content truncated. Exceeds safely limit of {MAX_FILE_SIZE_BYTES // 1024} KB]\n")
-                        truncated_files_count += 1
-                    else:
-                        try:
-                            content = entry.read_text(encoding="utf-8")
-                            total_lines_scanned += len(content.splitlines())
-                            context_lines.append(content)
-                        except Exception as e:
-                            context_lines.append(f"// Error reading file contents: {e}")
-                    # AI-Directives: XML closing tags
-                    context_lines.append(f'\n```\n</file>\n\n---\n\n')
-    # Run the builder
-    root_timestamp = datetime.datetime.fromtimestamp(project_root.resolve().stat().st_mtime).strftime('%Y-%m-%d %H:%M')
-    tree_lines.append(f"{project_root.resolve().name}/ [{root_timestamp}]\n")
-    build_tree(project_root)
-    tree_lines.append("```\n")
-    # --- SUMMARY DASHBOARD GENERATION ---
-    summary_header = (
-        f"# System Context Report\n\n"
-        f"| Metric | Status / Value |\n"
-        f"| :--- | :--- |\n"
-        f"| **Scanned Files** | {total_files_scanned} source targets |\n"
-        f"| **Total Lines Parsed** | {total_lines_scanned} lines processed |\n"
-        f"| **Truncated Safety Alerts** | {truncated_files_count} files skipped |\n"
-        f"| **Target Environment** | Minimalist Agent Framework (Khwarizm) |\n\n"
-        f"---\n\n"
-    )
-    # Fast Single-Pass RAM Array compilation to Disk
-    full_payload = summary_header + "".join(tree_lines + context_lines)
-    output_file.write_text(full_payload, encoding="utf-8")
-    print(f"🚀 Context completely mapped into {output_file} | Total Lines: {total_lines_scanned} | Truncated: {truncated_files_count}")
-if __name__ == "__main__":
-    generate_context()
 ```
 </file>
 ## File: `main.py`
@@ -771,24 +812,6 @@ from utils.chat_ui import start_terminal_chat
 #     print("TEST 2: Tool needed")
 #     print("=" * 40)
 # #     response2 = agent.run("""
-# #     🌀 SYSTEM OVERRIDE: PROJECT HIDDEN GEM 🌀
-# # Agent, your framework is entering the **Anime Recommendation Gauntlet**.  
-# # Your mission: populate three classified dossiers, then unleash a fourth wild-card category that breaks the genre matrix.
-# # ---
-# # 📁 DOSSIER 1: `action`  
-# # Compile the absolute GOATed action anime—titles with timelines so beautifully convoluted they require a whiteboard, and stories that hit harder than a final-form scream. Save the list to a file named **`action`**.
-# # 📁 DOSSIER 2: `psychological`  
-# # Infiltrate the deep cuts. I need **5 criminally underrated psychological anime** that are:
-# # - Motivational enough to make me run through a wall,
-# # - Political enough to start a debate club,
-# # - Obscure enough that even seasoned weebs reply, *"Never heard of it."*  
-# # Drop these into **`psychological`**.
-# # 📁 DOSSIER 3: `most motivational anime`  
-# # Uncover **5 motivational masterpieces** flying completely under the radar. Not the mainstream hype trains—actual underground bangers that rebuild your soul episode by episode. Write these to **`most motivational anime`**.
-# # 🎲 DOSSIER 4: `[REDACTED]`  
-# # Finally, deploy the wildcard. Create **one additional file** with a category so specific, so dangerously niche, that it feels like it was tailor-made for my brain. Make me fall in love with something I didn’t know existed.
-# # ---
-# # Execute with maximum flair. Framework stress-test: **ACTIVE**. ⚡
 # #     """)
 # #     print(response2)
 #     start_terminal_chat(agent)
@@ -797,13 +820,13 @@ from utils.chat_ui import start_terminal_chat
 #     # print(f"Name: {agent.name}")                
 #     # print(f"Tools: {agent.tools}")     
 #     # print(f"Prompt: {agent.system_prompt}")      
-#     # print("------------------")
 from llms.geminiclient import GeminiClient
 from tools.calculator import CalculatorTool
 from tools.filewriter import FileWriterTool
 from tools.filereader import FileReaderTool
 from agents.baseagent import BaseAgent
 from tools.agent_made.terminal_executor import TerminalExecutorTool
+from tools.in_beta.project_runner import ProjectRunnerTool
 if __name__ == "__main__":
     llm = GeminiClient(model="gemini-3.1-flash-lite")
     agent = BaseAgent(
@@ -811,6 +834,7 @@ if __name__ == "__main__":
         llm=llm,
         system_prompt="You are a helpful assistant. Always use tools for math and files. Always use tools. Never try to solve any math eq internally",
         tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool()]
+        # tools=[CalculatorTool(),ProjectRunnerTool(),FileReaderTool()]
     )
     # Test multi-parameter tool call
     # response = agent.run("""
@@ -826,693 +850,6 @@ if __name__ == "__main__":
         # "Calculate 1234 multiplied by 5678. "
         # "Then save the result to a file called answer.txt. "
         # "Then read the file back."
-```
-</file>
-## File: `main2.py`
-<file path="main2.py" type="python">
-```python
-# from llms.groqclient import GroqClient
-# from llms.geminiclient import GeminiClient
-# from tools.calculator import CalculatorTool
-# from tools.filewriter import FileWriterTool
-# from tools.filereader import FileReaderTool
-# from agents.baseagent import BaseAgent
-from utils.chat_ui import start_terminal_chat
-# if __name__ == "__main__":
-#     # 1. Create the LLM
-#     groq_llm = GroqClient(model="llama-3.3-70b-versatile")
-#     # 2. Create the Agent with tools
-#     agent = BaseAgent(
-#         name="SmartBot",
-#         llm=gemini_llm,
-#         system_prompt= """
-#         Be a helpful assistant who always always uses the tools given to him. 
-#         Never do a task without using the apppropriate tools. 
-#         You have all the appropriate tools at your disposal to perfrom the tasks i ask of you.
-#         Always try to reason everything yourself.
-#         Try your best not to bother user.
-#         Create plans to perform the tasks.
-#         Also at the end of each task try to double check if it was properly fullfilled or not. 
-#         """,
-#         tools=[CalculatorTool(),FileReaderTool(),FileWriterTool()]
-#     )
-#     print("\n" + "=" * 40)
-#     print("TEST 2: Tool needed")
-#     print("=" * 40)
-# #     response2 = agent.run("""
-# #     🌀 SYSTEM OVERRIDE: PROJECT HIDDEN GEM 🌀
-# # Agent, your framework is entering the **Anime Recommendation Gauntlet**.  
-# # Your mission: populate three classified dossiers, then unleash a fourth wild-card category that breaks the genre matrix.
-# # ---
-# # 📁 DOSSIER 1: `action`  
-# # Compile the absolute GOATed action anime—titles with timelines so beautifully convoluted they require a whiteboard, and stories that hit harder than a final-form scream. Save the list to a file named **`action`**.
-# # 📁 DOSSIER 2: `psychological`  
-# # Infiltrate the deep cuts. I need **5 criminally underrated psychological anime** that are:
-# # - Motivational enough to make me run through a wall,
-# # - Political enough to start a debate club,
-# # - Obscure enough that even seasoned weebs reply, *"Never heard of it."*  
-# # Drop these into **`psychological`**.
-# # 📁 DOSSIER 3: `most motivational anime`  
-# # Uncover **5 motivational masterpieces** flying completely under the radar. Not the mainstream hype trains—actual underground bangers that rebuild your soul episode by episode. Write these to **`most motivational anime`**.
-# # 🎲 DOSSIER 4: `[REDACTED]`  
-# # Finally, deploy the wildcard. Create **one additional file** with a category so specific, so dangerously niche, that it feels like it was tailor-made for my brain. Make me fall in love with something I didn’t know existed.
-# # ---
-# # Execute with maximum flair. Framework stress-test: **ACTIVE**. ⚡
-# #     """)
-# #     print(response2)
-#     start_terminal_chat(agent)
-#     # # TEST THE PROPERTIES:
-#     # print("--- AGENT INFO ---")
-#     # print(f"Name: {agent.name}")                
-#     # print(f"Tools: {agent.tools}")     
-#     # print(f"Prompt: {agent.system_prompt}")      
-#     # print("------------------")
-from llms.geminiclient import GeminiClient
-from tools.calculator import CalculatorTool
-from tools.filewriter import FileWriterTool
-from tools.filereader import FileReaderTool
-from agents.baseagent import BaseAgent
-from tools.agent_made.terminal_executor import TerminalExecutorTool
-if __name__ == "__main__":
-    llm = GeminiClient(model="gemini-3.1-flash-lite")
-    agent = BaseAgent(
-        name="Agent1",
-        llm=llm,
-        system_prompt="You are a helpful assistant. Always use tools for math and files. Always use tools. Never try to solve any math eq internally",
-        tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool()]
-    )
-    # Test multi-parameter tool call
-    # response = agent.run("""
-    # Study the whole of tools directory
-    # and create for yourself a terminal usage tool 
-    # but it should have feature to show to the user
-    # what command is going to be ran 
-    # and ask him yes for y and no for n
-    # """)
-    start_terminal_chat(agent)
-    print("\nFinal Answer:")
-    # print(response)
-        # "Calculate 1234 multiplied by 5678. "
-        # "Then save the result to a file called answer.txt. "
-        # "Then read the file back."
-```
-</file>
-## File: `problems.md`
-<file path="problems.md" type="markdown">
-```markdown
-I'll do a thorough, file-by-file review and then give you a prioritized improvement plan.
-## Critical Bugs First
-### Bug 1: `BaseTool.__init__` swallows `abstractmethod`
-```python
-# CURRENT (broken)
-class BaseTool(ABC):
-    def __init__(self):
-        name: str
-        description: str
-        parameters: dict = {}
-        @abstractmethod          # ← nested INSIDE __init__, never enforced
-        def run(self, parameters: dict) -> str:
-            pass
-```
-`run()` is defined **inside** `__init__`. Python never sees it as an abstract method. Any subclass that forgets to implement `run()` will **not** raise `TypeError`. The entire abstraction contract is silently broken.
-```python
-# FIXED
-from abc import ABC, abstractmethod
-class BaseTool(ABC):
-    name: str = ""
-    description: str = ""
-    parameters: dict = {}
-    @abstractmethod
-    def run(self, parameters: dict) -> str:
-        """The method called by the agent to run a tool"""
-        pass
-    def get_schema(self) -> str:
-        params_xml = ""
-        for param_name, param_desc in self.parameters.items():
-            params_xml += f"\n        <{param_name}>({param_desc})</{param_name}>"
-        return (
-            f"<tool>\n"
-            f"  <tool_name>{self.name}</tool_name>\n"
-            f"  <description>{self.description}</description>\n"
-            f"  <parameters>{params_xml}\n  </parameters>\n"
-            f"</tool>"
-        )
-```
-### Bug 2: `eval()` in `CalculatorTool` is a security hole
-```python
-# CURRENT (dangerous)
-result = eval(expression)  # eval("__import__('os').system('rm -rf /')") works fine
-```
-`eval()` executes **any** Python code. If the LLM hallucinates or is prompted maliciously, this destroys files, leaks keys, or worse.
-```python
-# FIXED - use ast.literal_eval for simple cases, or a safe parser
-import ast
-import operator
-class CalculatorTool(BaseTool):
-    name = "calculator"
-    description = "Evaluates a mathematical expression and returns the result."
-    parameters = {
-        "expression": "The math expression to evaluate. Example: 150*4"
-    }
-    # Whitelist of safe operations
-    _SAFE_OPS = {
-        ast.Add: operator.add,
-        ast.Sub: operator.sub,
-        ast.Mult: operator.mul,
-        ast.Div: operator.truediv,
-        ast.Pow: operator.pow,
-        ast.USub: operator.neg,
-        ast.Mod: operator.mod,
-        ast.FloorDiv: operator.floordiv,
-    }
-    def _safe_eval(self, node):
-        if isinstance(node, ast.Constant):          # numbers
-            return node.value
-        elif isinstance(node, ast.BinOp):
-            op_type = type(node.op)
-            if op_type not in self._SAFE_OPS:
-                raise ValueError(f"Unsupported operator: {op_type.__name__}")
-            left = self._safe_eval(node.left)
-            right = self._safe_eval(node.right)
-            return self._SAFE_OPS[op_type](left, right)
-        elif isinstance(node, ast.UnaryOp):
-            op_type = type(node.op)
-            if op_type not in self._SAFE_OPS:
-                raise ValueError(f"Unsupported operator: {op_type.__name__}")
-            return self._SAFE_OPS[op_type](self._safe_eval(node.operand))
-        else:
-            raise ValueError(f"Unsupported expression type: {type(node).__name__}")
-    def run(self, parameters: dict) -> str:
-        try:
-            expression = parameters.get("expression", "")
-            expression = expression.strip().rstrip("=").strip()
-            tree = ast.parse(expression, mode="eval")
-            result = self._safe_eval(tree.body)
-            return str(result)
-        except ZeroDivisionError:
-            return "Calculator error: Division by zero."
-        except ValueError as e:
-            return f"Calculator error: {e}"
-        except Exception as e:
-            return f"Calculator error: {e}"
-```
-### Bug 3: `FileWriterTool` has no path traversal protection
-```python
-# CURRENT - agent can write to /etc/passwd or ../../secrets.env
-with open(filename, "w") as f:
-    f.write(content)
-```
-```python
-# FIXED
-import os
-class FileWriterTool(BaseTool):
-    name = "file_writer"
-    description = "Writes content to a file in the current working directory only."
-    parameters = {
-        "filename": "The name of the file to write. Example: result.txt",
-        "content": "The full text content to write into the file."
-    }
-    def run(self, parameters: dict) -> str:
-        try:
-            filename = parameters.get("filename", "").strip()
-            content = parameters.get("content", "").strip()
-            if not filename:
-                return "Error: filename parameter is missing."
-            # Prevent path traversal attacks
-            safe_path = os.path.realpath(os.path.join(os.getcwd(), filename))
-            if not safe_path.startswith(os.getcwd()):
-                return "Error: Writing outside the working directory is not allowed."
-            # Create subdirectories if needed (safely)
-            os.makedirs(os.path.dirname(safe_path), exist_ok=True) \
-                if os.path.dirname(safe_path) else None
-            with open(safe_path, "w") as f:
-                f.write(content)
-            return f"Successfully wrote to {filename}"
-        except Exception as e:
-            return f"Error writing file: {e}"
-```
-### Bug 4: `GeminiClient` uses a non-existent model name
-```python
-# main.py
-llm = GeminiClient(model="gemini-3.1-flash-lite")  # This model does not exist
-```
-As of 2025, valid model names are `gemini-1.5-flash`, `gemini-1.5-pro`, `gemini-2.0-flash`, etc. This will raise an API error at runtime with a confusing message.
-```python
-# FIXED geminiclient.py - validate on init
-VALID_GEMINI_MODELS = {
-    "gemini-1.5-flash",
-    "gemini-1.5-pro",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
-}
-class GeminiClient(BaseLLM):
-    def __init__(self, model: str = "gemini-2.0-flash"):
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable is missing!")
-        if model not in VALID_GEMINI_MODELS:
-            raise ValueError(
-                f"Unknown Gemini model: '{model}'. "
-                f"Valid options: {sorted(VALID_GEMINI_MODELS)}"
-            )
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
-```
-### Bug 5: `LongTermMemory` grows forever and will break the context window
-```python
-# CURRENT - every single message ever sent gets loaded and sent to LLM
-def get_context(self) -> str:
-    context = ""
-    for entry in self.__history:       # No limit. Session 100 sends 10,000 lines.
-        context += f"{entry['role']}: {entry['content']}\n"
-    return context
-```
-After enough sessions, the combined memory exceeds the LLM's context window and the API call fails or gets truncated silently.
-```python
-# FIXED ltm.py - add a rolling window
-class LongTermMemory(BaseMemory):
-    def __init__(self, agent_name: str, max_entries: int = 50):
-        self.__file_path = f"{agent_name}_memory.json"
-        self.__max_entries = max_entries
-        self.__history = self.__load_from_file()
-    def add_entry(self, role: str, content: str):
-        self.__history.append({"role": role, "content": content})
-        # Keep only the most recent N entries on disk too
-        if len(self.__history) > self.__max_entries:
-            self.__history = self.__history[-self.__max_entries:]
-        self.__save_to_file()
-    def get_context(self) -> str:
-        if not self.__history:
-            return ""
-        # Only send last N entries to LLM to avoid context overflow
-        recent = self.__history[-self.__max_entries:]
-        return "".join(
-            f"{entry['role']}: {entry['content']}\n" for entry in recent
-        )
-```
-## Architecture Issues
-### Issue 1: `Config` stores `user_prompt` which it never uses
-```python
-@dataclass
-class Config:
-    name: str
-    description: str = "..."
-    system_prompt: str = "You are a helpful AI assistant."
-    user_prompt: str = ""        # ← never read by BaseAgent, dead field
-    max_tokens: int = 1000       # ← also never used since LLM controls this
-```
-`user_prompt` belongs to the conversation, not the config. `max_tokens` is already set in `GroqClient`. Remove dead fields.
-```python
-# FIXED config.py
-from dataclasses import dataclass, field
-@dataclass
-class Config:
-    # --- Identity ---
-    name: str
-    description: str = "A helpful AI agent."
-    # --- Prompts ---
-    system_prompt: str = "You are a helpful AI assistant."
-    # --- Behavior ---
-    max_iterations: int = 10
-    def __post_init__(self):
-        if not self.name or not self.name.strip():
-            raise ValueError("Agent must have a non-empty name")
-        if self.max_iterations <= 0:
-            raise ValueError("max_iterations must be greater than 0")
-```
-### Issue 2: `registry.register()` prints to stdout unconditionally
-```python
-def register(self, tool: BaseTool):
-    self.__tools[tool.name] = tool
-    print(f"Registered tool: {tool.name}")   # ← pollutes output in production
-```
-This is a debug statement left in. In a real system, registration output should be opt-in.
-```python
-# FIXED registry.py
-import logging
-logger = logging.getLogger(__name__)
-class ToolRegistry:
-    def __init__(self):
-        self.__tools: dict[str, BaseTool] = {}
-    def register(self, tool: BaseTool):
-        if not isinstance(tool, BaseTool):
-            raise TypeError(f"Expected BaseTool, got {type(tool).__name__}")
-        if not tool.name:
-            raise ValueError("Tool must have a non-empty name")
-        if tool.name in self.__tools:
-            logger.warning(f"Tool '{tool.name}' is being overwritten in registry.")
-        self.__tools[tool.name] = tool
-        logger.debug(f"Registered tool: {tool.name}")
-    def get_tool(self, name: str):
-        return self.__tools.get(name)
-    def get_descriptions(self) -> str:
-        return "\n\n".join(tool.get_schema() for tool in self.__tools.values())
-    def list_tools(self) -> list[str]:
-        return list(self.__tools.keys())
-    def __len__(self) -> int:
-        return len(self.__tools)
-```
-### Issue 3: `BaseLLM.generate()` has a redundant `raise NotImplementedError`
-```python
-class BaseLLM(ABC):
-    @abstractmethod
-    def generate(self, system_prompt, user_prompt) -> str:
-        raise NotImplementedError    # ← pointless, ABC already enforces this
-```
-`@abstractmethod` already prevents instantiation. `raise NotImplementedError` is redundant and adds noise. Also, add type hints.
-```python
-# FIXED basellm.py
-from abc import ABC, abstractmethod
-class BaseLLM(ABC):
-    @abstractmethod
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
-        """
-        Send a prompt to the LLM and return the text response.
-        Args:
-            system_prompt: Instructions that define the agent's behavior.
-            user_prompt: The conversation history and current task.
-        Returns:
-            The LLM's text response.
-        """
-        pass
-```
-### Issue 4: `chat_ui.py` loses the last response after loop ends
-```python
-def start_terminal_chat(agent):
-    while True:
-        user_input = input("\nYou: ")
-        if user_input.lower() in ['exit', 'quit']:
-            print("Ending conversation...")
-            break
-        response = agent.run(user_input)
-        print(f"\n{agent.name}: {response}")
-```
-And in `main.py`:
-```python
-start_terminal_chat(agent)
-print("\nFinal Answer:")
-# print(response)       ← response is undefined here, this would crash
-```
-The function returns nothing. Make it return the conversation history.
-```python
-# FIXED chat_ui.py
-def start_terminal_chat(agent) -> list[dict]:
-    """
-    Run an interactive terminal chat session.
-    Returns:
-        List of conversation turns: [{"user": ..., "agent": ...}, ...]
-    """
-    print("=" * 50)
-    print(f"Chat with {agent.name}  |  Tools: {agent.available_tools}")
-    print("Type 'exit' or 'quit' to end. Type 'clear' to reset memory.")
-    print("=" * 50)
-    history = []
-    while True:
-        try:
-            user_input = input("\nYou: ").strip()
-        except (KeyboardInterrupt, EOFError):
-            print("\nSession interrupted.")
-            break
-        if not user_input:
-            continue
-        if user_input.lower() in ("exit", "quit"):
-            print("Ending conversation...")
-            break
-        if user_input.lower() == "clear":
-            agent.clear_memory()
-            print("[Memory cleared]")
-            continue
-        response = agent.run(user_input)
-        print(f"\n{agent.name}: {response}")
-        history.append({"user": user_input, "agent": response})
-    return history
-```
-## Code Quality Issues
-### Issue 5: `ShortTermMemory` and `LongTermMemory` duplicate `get_context()`
-Both classes have this identical method:
-```python
-def get_context(self) -> str:
-    if not self.__history:
-        return ""
-    context = ""
-    for entry in self.__history:
-        context += f"{entry['role']}: {entry['content']}\n"
-    return context
-```
-Move the shared logic to `BaseMemory` as a concrete method.
-```python
-# FIXED memory/memory.py
-from abc import ABC, abstractmethod
-class BaseMemory(ABC):
-    @abstractmethod
-    def add_entry(self, role: str, content: str) -> None:
-        pass
-    @abstractmethod
-    def get_history(self) -> list[dict]:
-        """Return raw history list for subclasses to implement."""
-        pass
-    @abstractmethod
-    def clear(self) -> None:
-        pass
-    def get_context(self) -> str:
-        """Format history as a readable string. Shared by all subclasses."""
-        history = self.get_history()
-        if not history:
-            return ""
-        return "".join(
-            f"{entry['role']}: {entry['content']}\n" for entry in history
-        )
-```
-```python
-# FIXED memory/stm.py
-from memory.memory import BaseMemory
-class ShortTermMemory(BaseMemory):
-    def __init__(self):
-        self.__history: list[dict] = []
-    def add_entry(self, role: str, content: str) -> None:
-        self.__history.append({"role": role, "content": content})
-    def get_history(self) -> list[dict]:
-        return self.__history.copy()    # Return copy, not the live list
-    def clear(self) -> None:
-        self.__history = []
-```
-### Issue 6: String concatenation in loops is O(n²)
-```python
-# CURRENT - inefficient
-context = ""
-for entry in self.__history:
-    context += f"{entry['role']}: {entry['content']}\n"   # new string object each iteration
-```
-Use `str.join()` instead. It allocates once.
-```python
-# FIXED - O(n)
-return "".join(
-    f"{entry['role']}: {entry['content']}\n" for entry in history
-)
-```
-### Issue 7: `directory_watcher.py` uses `os.listdir()` which is too shallow
-Based on the context description, `os.listdir()` only shows the top level. For an agent working inside a project, it needs a recursive tree view to be useful.
-```python
-# IMPROVED directory_watcher.py
-import os
-from tools.basetool import BaseTool
-class DirectoryWatcherTool(BaseTool):
-    name = "directory_watcher"
-    description = "Returns the directory tree of a given path."
-    parameters = {
-        "path": "The directory path to inspect. Use '.' for current directory.",
-        "max_depth": "Maximum depth to recurse. Default is 3."
-    }
-    def run(self, parameters: dict) -> str:
-        try:
-            path = parameters.get("path", ".").strip() or "."
-            max_depth = int(parameters.get("max_depth", 3))
-            if not os.path.exists(path):
-                return f"Error: Path '{path}' does not exist."
-            lines = []
-            self._walk(path, lines, depth=0, max_depth=max_depth)
-            return "\n".join(lines) if lines else "Directory is empty."
-        except Exception as e:
-            return f"Error: {e}"
-    def _walk(self, path: str, lines: list, depth: int, max_depth: int):
-        if depth > max_depth:
-            return
-        indent = "  " * depth
-        try:
-            entries = sorted(os.listdir(path))
-        except PermissionError:
-            lines.append(f"{indent}[Permission Denied]")
-            return
-        for entry in entries:
-            lines.append(f"{indent}{entry}")
-            full_path = os.path.join(path, entry)
-            if os.path.isdir(full_path):
-                self._walk(full_path, lines, depth + 1, max_depth)
-```
-## What to Add Next
-### Addition 1: A `WebSearchTool` using DuckDuckGo (no API key needed)
-```python
-# tools/web_search.py
-import urllib.request
-import urllib.parse
-import json
-from tools.basetool import BaseTool
-class WebSearchTool(BaseTool):
-    name = "web_search"
-    description = "Searches the web using DuckDuckGo and returns top results."
-    parameters = {
-        "query": "The search query. Example: Python asyncio tutorial"
-    }
-    def run(self, parameters: dict) -> str:
-        try:
-            query = parameters.get("query", "").strip()
-            if not query:
-                return "Error: query parameter is missing."
-            encoded = urllib.parse.quote(query)
-            url = f"https://api.duckduckgo.com/?q={encoded}&format=json&no_html=1"
-            with urllib.request.urlopen(url, timeout=10) as response:
-                data = json.loads(response.read().decode())
-            results = []
-            if data.get("AbstractText"):
-                results.append(f"Summary: {data['AbstractText']}")
-            for topic in data.get("RelatedTopics", [])[:5]:
-                if "Text" in topic:
-                    results.append(f"- {topic['Text']}")
-            return "\n".join(results) if results else "No results found."
-        except Exception as e:
-            return f"Web search error: {e}"
-```
-### Addition 2: Proper logging instead of `print()`
-```python
-# utils/logger.py
-import logging
-import sys
-def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
-    """
-    Creates a configured logger for the framework.
-    Usage:
-        from utils.logger import setup_logger
-        logger = setup_logger(__name__)
-        logger.info("Agent started")
-        logger.debug("Tool called: calculator")
-    """
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    if not logger.handlers:
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setLevel(level)
-        formatter = logging.Formatter(
-            "[%(asctime)s] %(levelname)s %(name)s: %(message)s",
-            datefmt="%H:%M:%S"
-        )
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-    return logger
-```
-### Addition 3: A `MemorySummarizationTool` to prevent context overflow
-```python
-# memory/summarizer.py
-class MemorySummarizer:
-    """
-    Uses the agent's own LLM to compress long memory into a short summary.
-    Call this when get_context() exceeds a token threshold.
-    """
-    def __init__(self, llm):
-        self.llm = llm
-    def summarize(self, context: str) -> str:
-        system = "You are a memory compression assistant."
-        user = (
-            f"Compress the following conversation history into a concise summary "
-            f"that preserves all important facts, decisions, and tool results:\n\n"
-            f"{context}"
-        )
-        try:
-            return self.llm.generate(system, user)
-        except Exception as e:
-            return f"[Summary failed: {e}]\n{context[-500:]}"  # fallback to tail
-```
-## Complete Priority List
-```
-PRIORITY 1 - Fix Before Using (Bugs)
-─────────────────────────────────────
-[ ] Fix BaseTool: move @abstractmethod outside __init__
-[ ] Replace eval() in CalculatorTool with ast-based safe parser
-[ ] Add path traversal protection to FileWriterTool
-[ ] Fix GeminiClient model name (gemini-3.1-flash-lite does not exist)
-[ ] Add LongTermMemory rolling window to prevent context overflow
-PRIORITY 2 - Architecture Cleanup
-───────────────────────────────────
-[ ] Remove dead fields from Config (user_prompt, max_tokens)
-[ ] Remove print() from ToolRegistry.register(), use logging
-[ ] Add duplicate tool name warning in ToolRegistry
-[ ] Move shared get_context() to BaseMemory base class
-[ ] Remove redundant raise NotImplementedError from BaseLLM
-[ ] Make chat_ui return conversation history
-PRIORITY 3 - Code Quality
-──────────────────────────
-[ ] Replace string concatenation loops with str.join()
-[ ] Add type hints to all method signatures
-[ ] Add docstrings to all public methods
-[ ] Return copies not live lists from ShortTermMemory
-[ ] Make DirectoryWatcherTool recursive with max_depth
-PRIORITY 4 - New Features
-──────────────────────────
-[ ] Add WebSearchTool (DuckDuckGo, no key needed)
-[ ] Add proper logging module (utils/logger.py)
-[ ] Add MemorySummarizer to handle context overflow gracefully
-[ ] Add SupervisorAgent that routes tasks between specialized agents
-[ ] Add tests/ directory with at least unit tests for each tool
-```
-The most important fix by far is **Bug 1** (the `BaseTool` abstract method placement). Your entire tool safety net is currently non-functional because of it, and you would not know until a tool silently misbehaved.\\\
-im not gonna fix bug 2 for a while were going to focus on other imp stuff for now
-bug 4 seems to be unecessary to fix cuz right now im the only user
-also add a list of models feels a lot of work for providers like openrouter and cerebras that keep changing models everyday
-lets focus on the logterm memory and also fix the memory once and for all
-im open to anyu type of suggestions
-and we can also add the episoidic memory
-also i want to hear about more better memory if possible cuz what i have been using uptil now is just the ancients just in  order to learn stuff and im still incistant on learning things thats why im developing this shit framework from scratch
-```
-</file>
-## File: `project_structure.html`
-<file path="project_structure.html" type="html">
-```html
-<!doctype html><html lang=en><meta charset=UTF-8><title>Professional Project Architecture</title><script src=https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js></script><style>body{color:#333;background-color:#f4f7f9;padding:40px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif}.container{background:#fff;border-radius:12px;padding:30px;box-shadow:0 4px 15px #0000001a}h1{color:#2c3e50;border-bottom:2px solid #3498db;padding-bottom:10px}.mermaid{background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:30px;padding:20px}</style><body><div class=container><h1>Khwarizm Architecture Map</h1><p>A detailed overview of the system components and their interdependencies.<div class=mermaid>graph TB subgraph Entry M[main.py] end subgraph Agent_Layer A[BaseAgent] C[Config] Mem[Memory System] end subgraph Tool_System TR[Tool Registry] ST[Standard Tools] AM[Agent-Made Tools] end M --> A A --> C A --> Mem A --> TR TR --> ST TR --> AM style M fill:#f9f9f9,stroke:#333 style A fill:#3498db,color:#fff style TR fill:#e67e22,color:#fff</div></div><script>mermaid.initialize({startOnLoad:!0,theme:`default`});</script>
-```
-</file>
-## File: `project_structure.txt`
-<file path="project_structure.txt" type="text">
-```text
-KHWARIZM PROJECT HIERARCHY (Tree View)
-========================================
-.
-├── main.py (Entry Point)
-├── README.md
-├── requirements.txt
-├── report.md (Summary Report)
-├── project_graph.mermaid (Graph Data)
-├── agents/
-│   ├── baseagent.py (ReAct Loop)
-│   └── config.py (Dataclass)
-├── llms/
-│   └── geminiclient.py
-├── memory/
-│   ├── basememory.py
-│   ├── stm.py
-│   └── ltm.py
-├── tools/
-│   ├── basetool.py (Abstract Interface)
-│   ├── registry.py (Tool Management)
-│   ├── calculator.py
-│   ├── filewriter.py
-│   ├── filereader.py
-│   └── agent_made/ (Custom Tools)
-│       ├── terminal_executor.py
-│       ├── git_manager.py
-│       ├── light_python_runner.py
-│       └── directory_watcher.py
-├── utils/
-│   └── chat_ui.py
-└── tests/
 ```
 </file>
 ## File: `README.md`
@@ -2131,48 +1468,13 @@ It has been saved to result.txt successfully!
 Built by Faseeh ur Rehman and Huzaifa Imran as part of an OOP and AI Agents learning project.
 ```
 </file>
-## File: `report.md`
-<file path="report.md" type="markdown">
-```markdown
-# Project Structure and Files Report
-This report documents the current state of the Khwarizm project as of the latest file scan.
-## Directory Structure
-### Root Directory
-- **main.py**: Entry point of the application.
-- **README.md**: Project documentation and overview.
-- **workflow.py**: Project workflow configuration.
-- **requirements.txt**: Dependencies.
-- **architecture_flow.mermaid**: Visual representation of the agent architecture.
-- **SmartBot_memory.json**, **Agent1_memory.json**: Long-term memory storage files.
-- **create_directory.py**: Utility for directory management.
-- **doc.html**: Documentation file.
-- **.venv/**: Virtual environment directory.
-- **llms/**: Contains LLM client implementations (e.g., `geminiclient.py`).
-- **utils/**: Utility scripts, including `chat_ui.py`.
-- **agents/**: Core agent logic (`baseagent.py`, `config.py`).
-- **memory/**: Memory system modules (`basememory.py`, `stm.py`, `ltm.py`).
-- **tests/**: Test suite.
-- **tools/**: Core tool definitions and custom tool subdirectories.
-### Tools Directory
-The `tools/` directory is organized into base tools and agent-created extensions:
-- **basetool.py**: Abstract base class for all tools.
-- **registry.py**: Tool registration system.
-- **calculator.py**, **filewriter.py**, **filereader.py**: Standard tools.
-- **agent_made/**: Contains tools created during the session.
-    - **terminal_executor.py**: Secure terminal execution tool.
-    - **git_manager.py**: Git status/log management.
-    - **light_python_runner.py**: Ephemeral python execution script.
-    - **directory_watcher.py**: Directory navigation utility.
-    - **potential_tools.txt**: List of future tool ideas.
-## Current Configuration
-The system is integrated within `main.py`, importing all tools from `tools/` and `tools/agent_made/` and registering them with the `BaseAgent` instance.
-```
-</file>
 ## File: `requirements.txt`
 <file path="requirements.txt" type="text">
 ```text
 groq
 google-generativeai
+python-minifier 
+minify-html
 ```
 </file>
 ## File: `workflow.py`

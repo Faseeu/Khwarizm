@@ -2,10 +2,10 @@ from abc import ABC,abstractmethod
 
 class BaseTool(ABC):
 
-    def __init__(self):
-        name: str
-        description: str
-        parameters: dict={}
+
+    name: str
+    description: str
+    parameters: dict={}
 
 
     @abstractmethod

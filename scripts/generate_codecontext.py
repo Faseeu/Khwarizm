@@ -4,7 +4,7 @@ from typing import Dict, List, Set
 
 def generate_context() -> None:
     output_file = Path("docs/codecontext.md")
-    project_root = Path("../")
+    project_root = Path(".")
     
     # --- CONFIGURATION & SAFETY SAFETY VALVES ---
     MAX_FILE_SIZE_BYTES = 200 * 1024  # 200 KB individual file ceiling guard
