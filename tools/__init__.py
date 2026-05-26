@@ -3,3 +3,4 @@ from tools.calculator import CalculatorTool
 from tools.registry import ToolRegistry
 from tools.filereader import FileReaderTool
 from tools.filewriter import FileWriterTool
+from in_beta import ProjectRunnerTool, InprocessPythonRunnerTool

@@ -32,32 +32,6 @@ from utils.chat_ui import start_terminal_chat
 #     print("TEST 2: Tool needed")
 #     print("=" * 40)
 # #     response2 = agent.run("""
-# #     🌀 SYSTEM OVERRIDE: PROJECT HIDDEN GEM 🌀
-
-# # Agent, your framework is entering the **Anime Recommendation Gauntlet**.  
-# # Your mission: populate three classified dossiers, then unleash a fourth wild-card category that breaks the genre matrix.
-
-# # ---
-
-# # 📁 DOSSIER 1: `action`  
-# # Compile the absolute GOATed action anime—titles with timelines so beautifully convoluted they require a whiteboard, and stories that hit harder than a final-form scream. Save the list to a file named **`action`**.
-
-# # 📁 DOSSIER 2: `psychological`  
-# # Infiltrate the deep cuts. I need **5 criminally underrated psychological anime** that are:
-# # - Motivational enough to make me run through a wall,
-# # - Political enough to start a debate club,
-# # - Obscure enough that even seasoned weebs reply, *"Never heard of it."*  
-# # Drop these into **`psychological`**.
-
-# # 📁 DOSSIER 3: `most motivational anime`  
-# # Uncover **5 motivational masterpieces** flying completely under the radar. Not the mainstream hype trains—actual underground bangers that rebuild your soul episode by episode. Write these to **`most motivational anime`**.
-
-# # 🎲 DOSSIER 4: `[REDACTED]`  
-# # Finally, deploy the wildcard. Create **one additional file** with a category so specific, so dangerously niche, that it feels like it was tailor-made for my brain. Make me fall in love with something I didn’t know existed.
-
-# # ---
-
-# # Execute with maximum flair. Framework stress-test: **ACTIVE**. ⚡
 # #     """)
 # #     print(response2)
 #     start_terminal_chat(agent)
@@ -68,7 +42,7 @@ from utils.chat_ui import start_terminal_chat
 #     # print(f"Name: {agent.name}")                
 #     # print(f"Tools: {agent.tools}")     
 #     # print(f"Prompt: {agent.system_prompt}")      
-#     # print("------------------")
+
 
 
 from llms.geminiclient import GeminiClient
@@ -77,7 +51,7 @@ from tools.filewriter import FileWriterTool
 from tools.filereader import FileReaderTool
 from agents.baseagent import BaseAgent
 from tools.agent_made.terminal_executor import TerminalExecutorTool
-from tools.project_runner import ProjectRunnerTool
+from tools.in_beta.project_runner import ProjectRunnerTool
 
 if __name__ == "__main__":
     

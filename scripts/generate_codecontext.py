@@ -11,12 +11,17 @@ def generate_context() -> None:
     
     ignore_dirs: Set[str] = {
         '__pycache__', 'tests', 'venv', '.venv', '.git', 
-        '.env', '.ephemeral_venv', '.temp_venv', '.idea', '.vscode','.agent_projects'
+        '.env', '.ephemeral_venv', '.temp_venv', '.idea',
+        '.vscode','.agent_projects','scripts','assets','in_beta'
     }
     ignore_files: Set[str] = {
         'codecontext.md',
+        'problems.md',
+        'project_structure.html',
         'context.md',
-        'Agent1_memory.json'
+        'Agent1_memory.json',
+        'main2.py',
+        
     }
 
     allowed_extensions: Set[str] = {'.py', '.md', '.txt', '.html', '.yaml', '.yml'}
