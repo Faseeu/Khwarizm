@@ -4,8 +4,9 @@ from memory.memory import BaseMemory
 
 class LongTermMemory(BaseMemory):
     
-    def __init__(self, agent_name: str):
+    def __init__(self, agent_name: str, max_entries: int = 100):
         self.__file_path = f"{agent_name}_memory.json"
+        self.__max_entries = max_entries
         self.__history = self.__load_from_file()
     
     def add_entry(self, role: str, content: str):
@@ -13,6 +14,11 @@ class LongTermMemory(BaseMemory):
             "role": role,
             "content": content
         })
+
+        if len(self.__history) > self.__max_entries:
+            self.__history = self.__history[-self.__max_entries:]
+
+            
         self.__save_to_file()
     
     def get_context(self) -> str:
