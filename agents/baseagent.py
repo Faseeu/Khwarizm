@@ -57,13 +57,21 @@ class BaseAgent:
         # The Memory part of the agent
         # Truly automatic  
         self.__base_system_prompt = system_prompt
-        self.__short_term = ShortTermMemory()
-        self.__long_term = LongTermMemory(agent_name=name)
+        self.__short_term = ShortTermMemory(max_entries=self.config.max_stm_entries)
+        self.__long_term = LongTermMemory(
+            agent_name=name,
+            max_entries=self.config.max_ltm_entries
+            )
 
     @property
     def name(self) -> str:
         # agent's name
         return self.config.name
+    
+    @property
+    def description(self) -> str:
+        # agent's description
+        return self.config.description
 
     @property
     def system_prompt(self) -> str:
