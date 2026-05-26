@@ -3,7 +3,8 @@
 | Metric | Status / Value |
 | :--- | :--- |
 | **Scanned Files** | 37 source targets |
-| **Total Source Lines** | 3521 lines parsed |
+| **Total Lines Parsed** | 3536 lines processed |
+| **Truncated Safety Alerts** | 0 files skipped |
 | **Target Environment** | Minimalist Agent Framework (Khwarizm) |
 
 ---
@@ -11,69 +12,72 @@
 # Project Architecture
 
 ```text
-Khwarizm/
-├── agents/
-│   ├── __init__.py
-│   ├── baseagent.py
-│   └── config.py
-├── llms/
-│   ├── __init__.py
-│   ├── basellm.py
-│   ├── geminiclient.py
-│   └── groqclient.py
-├── memory/
-│   ├── __init__.py
-│   ├── ltm.py
-│   ├── memory.py
-│   └── stm.py
-├── tools/
-│   ├── agent_made/
-│   │   ├── __init__.py
-│   │   ├── directory_watcher.py
-│   │   ├── git_manager.py
-│   │   ├── light_python_runner.py
-│   │   └── terminal_executor.py
-│   ├── __init__.py
-│   ├── basetool.py
-│   ├── calculator.py
-│   ├── filereader.py
-│   ├── filewriter.py
-│   ├── registry.py
-│   └── s.txt
-├── utils/
-│   └── chat_ui.py
-├── __init__.py
-├── Agent1_memory.json
-├── architecture_flow.mermaid
-├── baseagent.png
-├── codecontext.md
-├── context.md
-├── generate_codecontext.py
-├── main.py
-├── main2.py
-├── problems.md
-├── project_structure.html
-├── project_structure.txt
-├── README.md
-├── report.md
-├── requirements.txt
-└── workflow.py
+Khwarizm/ [2026-05-26 06:58]
+├── agents/ [2026-05-25 12:05]
+│   ├── __init__.py (0.0 KB) [2026-05-19 11:39]
+│   ├── baseagent.py (6.6 KB) [2026-05-26 06:47]
+│   └── config.py (1.1 KB) [2026-05-25 12:48]
+├── llms/ [2026-05-16 12:53]
+│   ├── __init__.py (0.1 KB) [2026-05-09 07:26]
+│   ├── basellm.py (0.1 KB) [2026-05-26 07:06]
+│   ├── geminiclient.py (0.9 KB) [2026-05-16 14:30]
+│   └── groqclient.py (0.8 KB) [2026-05-19 11:43]
+├── memory/ [2026-05-15 18:45]
+│   ├── __init__.py (0.0 KB) [2026-05-15 18:13]
+│   ├── ltm.py (1.5 KB) [2026-05-26 06:44]
+│   ├── memory.py (0.5 KB) [2026-05-15 18:30]
+│   └── stm.py (0.8 KB) [2026-05-26 06:31]
+├── tools/ [2026-05-25 11:45]
+│   ├── agent_made/ [2026-05-25 07:44]
+│   │   ├── __init__.py (0.0 KB) [2026-05-23 07:04]
+│   │   ├── directory_watcher.py (0.6 KB) [2026-05-23 07:18]
+│   │   ├── git_manager.py (1.0 KB) [2026-05-23 07:18]
+│   │   ├── light_python_runner.py (1.3 KB) [2026-05-23 07:21]
+│   │   └── terminal_executor.py (0.9 KB) [2026-05-23 07:04]
+│   ├── __init__.py (0.2 KB) [2026-05-16 06:08]
+│   ├── basetool.py (0.8 KB) [2026-05-25 11:45]
+│   ├── calculator.py (0.6 KB) [2026-05-22 18:22]
+│   ├── filereader.py (0.8 KB) [2026-05-22 18:29]
+│   ├── filewriter.py (1.3 KB) [2026-05-25 11:45]
+│   ├── registry.py (0.6 KB) [2026-05-22 18:33]
+│   └── s.txt (0.1 KB) [2026-05-25 07:42]
+├── utils/ [2026-05-19 12:10]
+│   └── chat_ui.py (0.4 KB) [2026-05-19 11:41]
+├── __init__.py (0.0 KB) [2026-05-09 20:19]
+├── Agent1_memory.json (13.1 KB) [2026-05-26 07:00]
+├── architecture_flow.mermaid (1.4 KB) [2026-05-21 08:45]
+├── baseagent.png (4034.3 KB) [2026-05-21 08:22]
+├── codecontext.md (127.1 KB) [2026-05-26 07:06]
+├── context.md (27.1 KB) [2026-05-25 11:45]
+├── generate_codecontext.py (5.0 KB) [2026-05-26 07:10]
+├── main.py (4.2 KB) [2026-05-23 09:25]
+├── main2.py (4.2 KB) [2026-05-23 07:13]
+├── problems.md (21.7 KB) [2026-05-25 13:09]
+├── project_structure.html (1.6 KB) [2026-05-23 08:29]
+├── project_structure.txt (0.9 KB) [2026-05-23 08:27]
+├── README.md (22.3 KB) [2026-05-21 09:24]
+├── report.md (1.8 KB) [2026-05-23 07:35]
+├── requirements.txt (0.0 KB) [2026-05-25 11:45]
+└── workflow.py (1.1 KB) [2026-05-23 06:18]
 ```
 
 # Source Code Deep-Dive
 
 ## File: `agents/__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-19 11:39` | **Size:** `0.00 KB`
 
+<file path="agents/__init__.py" type="python">
 ```python
 
 ```
+</file>
 
 ---
 
 ## File: `agents/baseagent.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-26 06:47` | **Size:** `6.58 KB`
 
+<file path="agents/baseagent.py" type="python">
 ```python
 from agents.config import Config
 from llms import BaseLLM
@@ -268,12 +272,14 @@ class BaseAgent:
         self.__long_term.clear()
         print(f"[{self.name}] Memory cleared.")
 ```
+</file>
 
 ---
 
 ## File: `agents/config.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-25 12:48` | **Size:** `1.05 KB`
 
+<file path="agents/config.py" type="python">
 ```python
 from dataclasses import dataclass
 
@@ -315,22 +321,26 @@ class Config:
 
 
 ```
+</file>
 
 ---
 
 ## File: `llms/__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-09 07:26` | **Size:** `0.06 KB`
 
+<file path="llms/__init__.py" type="python">
 ```python
 from .basellm import BaseLLM
 from .groqclient import GroqClient
 ```
+</file>
 
 ---
 
 ## File: `llms/basellm.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-26 07:06` | **Size:** `0.15 KB`
 
+<file path="llms/basellm.py" type="python">
 ```python
 from abc import ABC , abstractmethod
 
@@ -340,12 +350,14 @@ class BaseLLM(ABC):
     def generate(self, system_prompt, user_prompt) ->str:
         pass
 ```
+</file>
 
 ---
 
 ## File: `llms/geminiclient.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-16 14:30` | **Size:** `0.90 KB`
 
+<file path="llms/geminiclient.py" type="python">
 ```python
 import os
 import google.generativeai as genai
@@ -375,12 +387,14 @@ class GeminiClient(BaseLLM):
         except Exception as e:
             return f"Error: Gemini API failed with message: {str(e)}"
 ```
+</file>
 
 ---
 
 ## File: `llms/groqclient.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-19 11:43` | **Size:** `0.79 KB`
 
+<file path="llms/groqclient.py" type="python">
 ```python
 from llms.basellm import BaseLLM
 from groq import Groq
@@ -406,21 +420,25 @@ class GroqClient(BaseLLM):
         except Exception as e:
             return f"Error: LLM API failed with message: {str(e)}"
 ```
+</file>
 
 ---
 
 ## File: `memory/__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-15 18:13` | **Size:** `0.00 KB`
 
+<file path="memory/__init__.py" type="python">
 ```python
 
 ```
+</file>
 
 ---
 
 ## File: `memory/ltm.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-26 06:44` | **Size:** `1.54 KB`
 
+<file path="memory/ltm.py" type="python">
 ```python
 import json
 import os
@@ -474,12 +492,14 @@ class LongTermMemory(BaseMemory):
                 return []
         return []
 ```
+</file>
 
 ---
 
 ## File: `memory/memory.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-15 18:30` | **Size:** `0.54 KB`
 
+<file path="memory/memory.py" type="python">
 ```python
 from abc import ABC, abstractmethod
 
@@ -508,12 +528,14 @@ class BaseMemory(ABC):
 
 
 ```
+</file>
 
 ---
 
 ## File: `memory/stm.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-26 06:31` | **Size:** `0.75 KB`
 
+<file path="memory/stm.py" type="python">
 ```python
 from memory.memory import BaseMemory
 
@@ -546,21 +568,25 @@ class ShortTermMemory(BaseMemory):
     def clear(self):
         self.__history = []
 ```
+</file>
 
 ---
 
 ## File: `tools/agent_made/__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:04` | **Size:** `0.00 KB`
 
+<file path="tools/agent_made/__init__.py" type="python">
 ```python
 
 ```
+</file>
 
 ---
 
 ## File: `tools/agent_made/directory_watcher.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:18` | **Size:** `0.60 KB`
 
+<file path="tools/agent_made/directory_watcher.py" type="python">
 ```python
 from tools.basetool import BaseTool
 import os
@@ -581,12 +607,14 @@ class DirectoryWatcherTool(BaseTool):
         except Exception as e:
             return f"Error accessing directory: {str(e)}"
 ```
+</file>
 
 ---
 
 ## File: `tools/agent_made/git_manager.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:18` | **Size:** `1.01 KB`
 
+<file path="tools/agent_made/git_manager.py" type="python">
 ```python
 from tools.basetool import BaseTool
 import subprocess
@@ -614,12 +642,14 @@ class GitManagerTool(BaseTool):
         else:
             return "Git command execution cancelled by user."
 ```
+</file>
 
 ---
 
 ## File: `tools/agent_made/light_python_runner.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:21` | **Size:** `1.35 KB`
 
+<file path="tools/agent_made/light_python_runner.py" type="python">
 ```python
 from tools.basetool import BaseTool
 import subprocess
@@ -659,12 +689,14 @@ class LightPythonRunnerTool(BaseTool):
         else:
             return "Execution cancelled by user."
 ```
+</file>
 
 ---
 
 ## File: `tools/agent_made/terminal_executor.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:04` | **Size:** `0.91 KB`
 
+<file path="tools/agent_made/terminal_executor.py" type="python">
 ```python
 from tools.basetool import BaseTool
 import subprocess
@@ -692,12 +724,14 @@ class TerminalExecutorTool(BaseTool):
             return "Command execution cancelled by user."
 
 ```
+</file>
 
 ---
 
 ## File: `tools/__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-16 06:08` | **Size:** `0.20 KB`
 
+<file path="tools/__init__.py" type="python">
 ```python
 from tools.basetool import BaseTool
 from tools.calculator import CalculatorTool
@@ -705,12 +739,14 @@ from tools.registry import ToolRegistry
 from tools.filereader import FileReaderTool
 from tools.filewriter import FileWriterTool
 ```
+</file>
 
 ---
 
 ## File: `tools/basetool.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-25 11:45` | **Size:** `0.79 KB`
 
+<file path="tools/basetool.py" type="python">
 ```python
 from abc import ABC,abstractmethod
 
@@ -743,12 +779,14 @@ class BaseTool(ABC):
         )
 
 ```
+</file>
 
 ---
 
 ## File: `tools/calculator.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-22 18:22` | **Size:** `0.64 KB`
 
+<file path="tools/calculator.py" type="python">
 ```python
 from tools.basetool import BaseTool
 
@@ -769,12 +807,14 @@ class CalculatorTool(BaseTool):
         except Exception as e:
             return f"Calculator error: {e}"
 ```
+</file>
 
 ---
 
 ## File: `tools/filereader.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-22 18:29` | **Size:** `0.75 KB`
 
+<file path="tools/filereader.py" type="python">
 ```python
 from tools.basetool import BaseTool
 
@@ -800,12 +840,14 @@ class FileReaderTool(BaseTool):
         except Exception as e:
             return f"Error reading file: {e}"
 ```
+</file>
 
 ---
 
 ## File: `tools/filewriter.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-25 11:45` | **Size:** `1.25 KB`
 
+<file path="tools/filewriter.py" type="python">
 ```python
 from tools.basetool import BaseTool
 
@@ -843,12 +885,14 @@ class FileWriterTool(BaseTool):
             return f"Error writing file: {e}"
 
 ```
+</file>
 
 ---
 
 ## File: `tools/registry.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-22 18:33` | **Size:** `0.62 KB`
 
+<file path="tools/registry.py" type="python">
 ```python
 from tools.basetool import BaseTool
 
@@ -873,22 +917,26 @@ class ToolRegistry:
     def list_tools(self) -> list:
         return list(self.__tools.keys())
 ```
+</file>
 
 ---
 
 ## File: `tools/s.txt`
-Content Type: `TEXT`
+**Last Modified:** `2026-05-25 07:42` | **Size:** `0.09 KB`
 
+<file path="tools/s.txt" type="text">
 ```text
 git config --global user.email "faseuu@gmail.com"
 git config --global user.name "Faseeu"
 ```
+</file>
 
 ---
 
 ## File: `utils/chat_ui.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-19 11:41` | **Size:** `0.42 KB`
 
+<file path="utils/chat_ui.py" type="python">
 ```python
 # utils/chat_ui.py
 
@@ -906,21 +954,25 @@ def start_terminal_chat(agent):
         response = agent.run(user_input)
         print(f"\n{agent.name}: {response}")
 ```
+</file>
 
 ---
 
 ## File: `__init__.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-09 20:19` | **Size:** `0.00 KB`
 
+<file path="__init__.py" type="python">
 ```python
 
 ```
+</file>
 
 ---
 
 ## File: `Agent1_memory.json`
-Content Type: `JSON`
+**Last Modified:** `2026-05-26 07:00` | **Size:** `13.05 KB`
 
+<file path="Agent1_memory.json" type="json">
 ```json
 [
     {
@@ -1081,12 +1133,14 @@ Content Type: `JSON`
     }
 ]
 ```
+</file>
 
 ---
 
 ## File: `context.md`
-Content Type: `MARKDOWN`
+**Last Modified:** `2026-05-25 11:45` | **Size:** `27.10 KB`
 
+<file path="context.md" type="markdown">
 ```markdown
 # Project Context Analysis
 
@@ -1811,13 +1865,16 @@ The Groq LLM interface client.
 - **Flow and Connections**: Similar to `GeminiClient`, this is an interchangeable LLM provider. It implements `BaseLLM` and is prepared for use within `BaseAgent` as a substitute or companion to the Gemini implementation.
 
 ```
+</file>
 
 ---
 
 ## File: `generate_codecontext.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-26 07:10` | **Size:** `4.99 KB`
 
+<file path="generate_codecontext.py" type="python">
 ```python
+import datetime
 from pathlib import Path
 from typing import Dict, List, Set
 
@@ -1825,7 +1882,9 @@ def generate_context() -> None:
     output_file = Path("codecontext.md")
     project_root = Path(".")
     
-    # 1. Configuration & Rules
+    # --- CONFIGURATION & SAFETY SAFETY VALVES ---
+    MAX_FILE_SIZE_BYTES = 200 * 1024  # 200 KB individual file ceiling guard
+    
     ignore_dirs: Set[str] = {
         '__pycache__', 'tests', 'venv', '.venv', '.git', 
         '.env', '.ephemeral_venv', '.temp_venv', '.idea', '.vscode'
@@ -1833,26 +1892,22 @@ def generate_context() -> None:
     allowed_extensions: Set[str] = {'.py', '.md', '.txt', '.html', '.json', '.yaml', '.yml'}
     
     lang_mapping: Dict[str, str] = {
-        '.py': 'python',
-        '.html': 'html',
-        '.md': 'markdown',
-        '.json': 'json',
-        '.yaml': 'yaml',
-        '.yml': 'yaml'
+        '.py': 'python', '.html': 'html', '.md': 'markdown',
+        '.json': 'json', '.yaml': 'yaml', '.yml': 'yaml'
     }
 
-    # Tracking metrics for the top header summary
+    # Reporting Metrics
     total_files_scanned = 0
     total_lines_scanned = 0
+    truncated_files_count = 0
     
     tree_lines: List[str] = ["# Project Architecture\n\n```text\n"]
     context_lines: List[str] = ["\n# Source Code Deep-Dive\n\n"]
 
-    # 2. Build the Visual Tree Structure (Recursive Helper for Perfect Box-Drawing)
+    # --- RECURSIVE ENGINE WITH TIMESTAMPS & SIZE CHECKS ---
     def build_tree(dir_path: Path, prefix: str = "") -> None:
-        nonlocal total_files_scanned, total_lines_scanned
+        nonlocal total_files_scanned, total_lines_scanned, truncated_files_count
         
-        # Gather and sort directory contents (directories first, then files)
         try:
             entries = sorted(
                 [e for e in dir_path.iterdir() if e.name not in ignore_dirs and not e.name.startswith('.')],
@@ -1865,63 +1920,81 @@ def generate_context() -> None:
             is_last = (i == len(entries) - 1)
             connector = "└── " if is_last else "├── "
             
+            # Fetch last modified timestamp dynamically
+            mtime = entry.stat().st_mtime
+            timestamp = datetime.datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
+            
             if entry.is_dir():
-                tree_lines.append(f"{prefix}{connector}{entry.name}/\n")
-                # Extend the prefix bar for nested children
+                tree_lines.append(f"{prefix}{connector}{entry.name}/ [{timestamp}]\n")
                 next_prefix = prefix + ("    " if is_last else "│   ")
                 build_tree(entry, next_prefix)
             
             elif entry.is_file():
-                tree_lines.append(f"{prefix}{connector}{entry.name}\n")
+                file_size_kb = entry.stat().st_size / 1024
+                tree_lines.append(f"{prefix}{connector}{entry.name} ({file_size_kb:.1f} KB) [{timestamp}]\n")
                 
-                # Append file content context if extension matches rules
+                # Content Processing Block
                 if entry.suffix in allowed_extensions and entry != output_file:
                     total_files_scanned += 1
                     lang = lang_mapping.get(entry.suffix, 'text')
                     
+                    # Structural Markdown Title
                     context_lines.append(f"## File: `{entry.as_posix()}`\n")
-                    context_lines.append(f"Content Type: `{lang.upper()}`\n\n```{lang}\n")
+                    context_lines.append(f"**Last Modified:** `{timestamp}` | **Size:** `{file_size_kb:.2f} KB`\n\n")
                     
-                    try:
-                        content = entry.read_text(encoding="utf-8")
-                        total_lines_scanned += len(content.splitlines())
-                        context_lines.append(content)
-                    except Exception as e:
-                        context_lines.append(f"// Error reading file: {e}")
-                        
-                    context_lines.append("\n```\n\n---\n\n")
+                    # AI-Directives: XML opening anchor tags for crisp context parsing
+                    context_lines.append(f'<file path="{entry.as_posix()}" type="{lang}">\n```{lang}\n')
+                    
+                    # Enforce Maximum File Size Limit Guard
+                    if entry.stat().st_size > MAX_FILE_SIZE_BYTES:
+                        context_lines.append(f"// [SYSTEM WARNING: File content truncated. Exceeds safely limit of {MAX_FILE_SIZE_BYTES // 1024} KB]\n")
+                        truncated_files_count += 1
+                    else:
+                        try:
+                            content = entry.read_text(encoding="utf-8")
+                            total_lines_scanned += len(content.splitlines())
+                            context_lines.append(content)
+                        except Exception as e:
+                            context_lines.append(f"// Error reading file contents: {e}")
+                    
+                    # AI-Directives: XML closing tags
+                    context_lines.append(f'\n```\n</file>\n\n---\n\n')
 
-    # 3. Process Architecture & File Writes
-    tree_lines.append(f"{project_root.resolve().name}/\n")
+    # Run the builder
+    root_timestamp = datetime.datetime.fromtimestamp(project_root.resolve().stat().st_mtime).strftime('%Y-%m-%d %H:%M')
+    tree_lines.append(f"{project_root.resolve().name}/ [{root_timestamp}]\n")
     build_tree(project_root)
     tree_lines.append("```\n")
 
-    # 4. Generate the High-Value Analytics Summary Header
+    # --- SUMMARY DASHBOARD GENERATION ---
     summary_header = (
         f"# System Context Report\n\n"
         f"| Metric | Status / Value |\n"
         f"| :--- | :--- |\n"
         f"| **Scanned Files** | {total_files_scanned} source targets |\n"
-        f"| **Total Source Lines** | {total_lines_scanned} lines parsed |\n"
+        f"| **Total Lines Parsed** | {total_lines_scanned} lines processed |\n"
+        f"| **Truncated Safety Alerts** | {truncated_files_count} files skipped |\n"
         f"| **Target Environment** | Minimalist Agent Framework (Khwarizm) |\n\n"
         f"---\n\n"
     )
 
-    # Compile and stream everything to disk instantly
+    # Fast Single-Pass RAM Array compilation to Disk
     full_payload = summary_header + "".join(tree_lines + context_lines)
     output_file.write_text(full_payload, encoding="utf-8")
     
-    print(f"🚀 Context perfectly mapped into {output_file} ({total_files_scanned} files, {total_lines_scanned} lines processed).")
+    print(f"🚀 Context completely mapped into {output_file} | Total Lines: {total_lines_scanned} | Truncated: {truncated_files_count}")
 
 if __name__ == "__main__":
     generate_context()
 ```
+</file>
 
 ---
 
 ## File: `main.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 09:25` | **Size:** `4.22 KB`
 
+<file path="main.py" type="python">
 ```python
 # from llms.groqclient import GroqClient
 # from llms.geminiclient import GeminiClient
@@ -2032,12 +2105,14 @@ if __name__ == "__main__":
         # "Then save the result to a file called answer.txt. "
         # "Then read the file back."
 ```
+</file>
 
 ---
 
 ## File: `main2.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 07:13` | **Size:** `4.22 KB`
 
+<file path="main2.py" type="python">
 ```python
 # from llms.groqclient import GroqClient
 # from llms.geminiclient import GeminiClient
@@ -2148,12 +2223,14 @@ if __name__ == "__main__":
         # "Then save the result to a file called answer.txt. "
         # "Then read the file back."
 ```
+</file>
 
 ---
 
 ## File: `problems.md`
-Content Type: `MARKDOWN`
+**Last Modified:** `2026-05-25 13:09` | **Size:** `21.65 KB`
 
+<file path="problems.md" type="markdown">
 ```markdown
 I'll do a thorough, file-by-file review and then give you a prioritized improvement plan.
 
@@ -2882,12 +2959,14 @@ im open to anyu type of suggestions
 and we can also add the episoidic memory
 also i want to hear about more better memory if possible cuz what i have been using uptil now is just the ancients just in  order to learn stuff and im still incistant on learning things thats why im developing this shit framework from scratch
 ```
+</file>
 
 ---
 
 ## File: `project_structure.html`
-Content Type: `HTML`
+**Last Modified:** `2026-05-23 08:29` | **Size:** `1.61 KB`
 
+<file path="project_structure.html" type="html">
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -2936,12 +3015,14 @@ Content Type: `HTML`
 </body>
 </html>
 ```
+</file>
 
 ---
 
 ## File: `project_structure.txt`
-Content Type: `TEXT`
+**Last Modified:** `2026-05-23 08:27` | **Size:** `0.93 KB`
 
+<file path="project_structure.txt" type="text">
 ```text
 KHWARIZM PROJECT HIERARCHY (Tree View)
 ========================================
@@ -2976,12 +3057,14 @@ KHWARIZM PROJECT HIERARCHY (Tree View)
 │   └── chat_ui.py
 └── tests/
 ```
+</file>
 
 ---
 
 ## File: `README.md`
-Content Type: `MARKDOWN`
+**Last Modified:** `2026-05-21 09:24` | **Size:** `22.29 KB`
 
+<file path="README.md" type="markdown">
 ```markdown
 # Khwarizm - AI Agent Framework
 
@@ -3786,12 +3869,14 @@ It has been saved to result.txt successfully!
 ## Authors
 Built by Faseeh ur Rehman and Huzaifa Imran as part of an OOP and AI Agents learning project.
 ```
+</file>
 
 ---
 
 ## File: `report.md`
-Content Type: `MARKDOWN`
+**Last Modified:** `2026-05-23 07:35` | **Size:** `1.81 KB`
 
+<file path="report.md" type="markdown">
 ```markdown
 # Project Structure and Files Report
 
@@ -3831,23 +3916,27 @@ The `tools/` directory is organized into base tools and agent-created extensions
 ## Current Configuration
 The system is integrated within `main.py`, importing all tools from `tools/` and `tools/agent_made/` and registering them with the `BaseAgent` instance.
 ```
+</file>
 
 ---
 
 ## File: `requirements.txt`
-Content Type: `TEXT`
+**Last Modified:** `2026-05-25 11:45` | **Size:** `0.02 KB`
 
+<file path="requirements.txt" type="text">
 ```text
 groq
 google-generativeai
 
 ```
+</file>
 
 ---
 
 ## File: `workflow.py`
-Content Type: `PYTHON`
+**Last Modified:** `2026-05-23 06:18` | **Size:** `1.13 KB`
 
+<file path="workflow.py" type="python">
 ```python
 from llms.geminiclient import GeminiClient
 from tools.filewriter import FileWriterTool
@@ -3887,6 +3976,7 @@ critic_output = critic.run("Read poem.txt and another poem file and crush their 
 print("\nCritic's Verdict:")
 print(critic_output)
 ```
+</file>
 
 ---
 
