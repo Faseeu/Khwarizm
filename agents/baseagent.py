@@ -6,12 +6,32 @@ from memory.ltm import LongTermMemory
 import xml.etree.ElementTree as ET
 
 class BaseAgent:
+    """
+    The core agent class. Wraps an LLM with memory, tools, and a
+    ReAct reasoning loop.
+
+    Args:
+        name:            Agent's name. Also used as the LTM filename key.
+        llm:             Any BaseLLM implementation (Groq, Gemini, etc.)
+        system_prompt:   Base instructions for the agent.
+        tools:           List of BaseTool instances. Optional.
+        max_iterations:  Max ReAct loop iterations before giving up.
+        max_ltm_entries: Rolling window size for long term memory.
+        max_stm_entries: Rolling window size for short term memory.
+        use_ltm:         Set False for a stateless agent with no disk writes.
+        description:     Human-readable description of what this agent does.
+    """
+        
     def __init__(self,
                 name,
                 llm:BaseLLM,
                 system_prompt: str = "You are a helpful AI assistant", 
-                
-                tools: list = None
+                tools: list = None,
+                max_iterations: int = 10,
+                max_ltm_entries: int = 100,
+                max_stm_entries: int = 50,
+                description: str = "A helpful AI agent.",
+                use_llm: bool = True
                 ):
         
         self.llm = llm
@@ -49,8 +69,11 @@ class BaseAgent:
         # THE CONFIG
         self.config = Config(
             name=name,
-            description="Agent",
+            description=description,
             system_prompt=system_prompt,
+            max_iterations=max_iterations,
+            max_ltm_entries=max_ltm_entries,
+            max_stm_entries=max_stm_entries,
         )
 
         # Memory 
@@ -61,7 +84,7 @@ class BaseAgent:
         self.__long_term = LongTermMemory(
             agent_name=name,
             max_entries=self.config.max_ltm_entries
-            )
+            ) if use_llm else None
 
     @property
     def name(self) -> str:
@@ -87,7 +110,8 @@ class BaseAgent:
     def run(self, user_input: str) -> str:
 
         self.__short_term.add_entry(role="user", content= user_input)
-        self.__long_term.add_entry(role="user", content= user_input)
+        if self.__long_term:
+            self.__long_term.add_entry(role="user", content= user_input)
 
 
         iterations = 0
@@ -102,15 +126,20 @@ class BaseAgent:
 
             #  Build context from BOTH memories
 
-            long_term_context = self.__long_term.get_context()
-            short_term_context = self.__short_term.get_context()
+            # long_term_context = self.__long_term.get_context()
+            # short_term_context = self.__short_term.get_context()
 
             #  Combine them into one prompt
-            full_context = (
-                f"Past Conversations:\n{long_term_context}\n\n"
-                f"Current Session:\n{short_term_context}"
-            )
-            
+                    # In run() - replace the context building block
+            if self.__long_term:
+                long_term_context = self.__long_term.get_context()
+                full_context = (
+                    f"Past Conversations:\n{long_term_context}\n\n"
+                    f"Current Session:\n{self.__short_term.get_context()}"
+                )
+            else:
+                full_context = f"Current Session:\n{self.__short_term.get_context()}"
+                        
             # print("\n--- SYSTEM PROMPT ---")
             # print(self.config.system_prompt)
             # print("--- END SYSTEM PROMPT ---\n")
@@ -141,19 +170,26 @@ class BaseAgent:
                     role="tool",
                     content=tool_note
                 )
+                if self.__long_term:
+                    self.__long_term.add_entry(role="assistant", content=response)
+                    self.__long_term.add_entry(role="tool", content=tool_note)
                 continue
 
              # Save to both memories
             self.__short_term.add_entry(role="assistant", content=response)
-            self.__long_term.add_entry(role="assistant", content=response)
+            if self.__long_term:
+                self.__long_term.add_entry(role="assistant", content=response)
             
-            return response if response else "Error: Agent reached max iterations without a final answer."
+            return response
+        return f"[{self.name}] Error: Reached max iterations ({self.config.max_iterations}) without a final answer."
+    
+
     def __repr__(self) -> str:
                 return (
                     f"BaseAgent(name='{self.name}', "
                     f"tools={self.tools}, "
                     f"stm={self.__short_term}, "
-                    f"ltm={self.__long_term})"
+                    f"ltm={'on' if self.__long_term else 'off'})"
                 )
     
     def __handle_tool_call(self, response: str) -> str:
@@ -193,7 +229,9 @@ class BaseAgent:
             return f"Error during tool execution: {e}"
 
 
-    def clear_memory(self):
+    # Fix clear_memory
+    def clear_memory(self) -> None:
         self.__short_term.clear()
-        self.__long_term.clear()
+        if self.__long_term:
+            self.__long_term.clear()
         print(f"[{self.name}] Memory cleared.")
