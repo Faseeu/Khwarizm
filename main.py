@@ -4,7 +4,7 @@
 # from tools.filewriter import FileWriterTool
 # from tools.filereader import FileReaderTool
 # from agents.baseagent import BaseAgent
-from utils.chat_ui import start_terminal_chat
+from utils.terminal_chat import start_terminal_chat
 
 # if __name__ == "__main__":
 
@@ -65,6 +65,7 @@ if __name__ == "__main__":
     )
 
     # Test multi-parameter tool call
+    # NO need for this when using the terminal chat util
     # response = agent.run("""
     # Study the whole of tools directory
     # and create for yourself a terminal usage tool 
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     # what command is going to be ran 
     # and ask him yes for y and no for n
     # """)
-    # start_terminal_chat(agent)
+    start_terminal_chat(agent)
     print(f"Prompt: {agent.system_prompt}")
     # print("\nFinal Answer:")
     # print(response)

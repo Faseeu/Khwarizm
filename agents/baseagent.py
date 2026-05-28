@@ -31,7 +31,7 @@ class BaseAgent:
                 max_ltm_entries: int = 100,
                 max_stm_entries: int = 50,
                 description: str = "A helpful AI agent.",
-                use_llm: bool = True
+                use_ltm: bool = True
                 ):
         
         self.llm = llm
@@ -81,10 +81,7 @@ class BaseAgent:
         # Truly automatic  
         self.__base_system_prompt = system_prompt
         self.__short_term = ShortTermMemory(max_entries=self.config.max_stm_entries)
-        self.__long_term = LongTermMemory(
-            agent_name=name,
-            max_entries=self.config.max_ltm_entries
-            ) if use_llm else None
+        self.__long_term = LongTermMemory(agent_name=name,max_entries=self.config.max_ltm_entries) if use_ltm else None
 
     @property
     def name(self) -> str:
