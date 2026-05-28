@@ -35,36 +35,16 @@ class BaseAgent:
                 ):
         
         self.llm = llm
-
         self.registry = ToolRegistry()
+
         tools = tools or []
         # THE LOOP 
         # Which automates the work of resgistering the TOOLS manually
         for tool in tools:
             self.registry.register(tool)
 
-        # This is basically a prompt that tells the llm what tools it has
-        if tools:
-            tool_schemas = self.registry.get_descriptions()
-            system_prompt = (
-                f"{system_prompt}\n\n"
-                f"You have access to these tools:\n"
-                f"{tool_schemas}\n\n"
-                f"STRICT RULES:\n"
-                f"CRITICAL: Only use ONE tool per response. Wait for the tool result before taking your next step.\n"
-                f"1. Use ONE tool per response. No exceptions.\n"
-                f"2. After using a tool,Stop. wait for the result before continuing. Do not write anything else.\n"
-                f"3. If you use more than one tool in a single response, I will stop the conversation and you will fail the task.\n\n"
-                f"4. NEVER call the same or different tool twice in one response.\n"
-                f"5. You MUST use tools when the task requires them.\n\n"
-                f"To use a tool, respond EXACTLY in this XML format:\n\n"
-                f"<tool_use>\n"
-                f"  <tool_name>tool_name_here</tool_name>\n"
-                f"  <parameters>\n"
-                f"    <param_name>value here</param_name>\n"
-                f"  </parameters>\n"
-                f"</tool_use>"
-            )
+        
+        
 
         # THE CONFIG
         self.config = Config(
@@ -79,9 +59,11 @@ class BaseAgent:
         # Memory 
         # The Memory part of the agent
         # Truly automatic  
-        self.__base_system_prompt = system_prompt
+        
         self.__short_term = ShortTermMemory(max_entries=self.config.max_stm_entries)
         self.__long_term = LongTermMemory(agent_name=name,max_entries=self.config.max_ltm_entries) if use_ltm else None
+
+        self.__base_system_prompt = self.__build_system_prompt(system_prompt)
 
     @property
     def name(self) -> str:
@@ -105,11 +87,8 @@ class BaseAgent:
     
 
     def run(self, user_input: str) -> str:
-
-        self.__short_term.add_entry(role="user", content= user_input)
-        if self.__long_term is not None:
-            self.__long_term.add_entry(role="user", content= user_input)
-
+        """The main ReAct reasoning loop."""
+        self.__save_memory(role="user", content=user_input)
 
         iterations = 0
         max_iters = self.config.max_iterations
@@ -122,20 +101,7 @@ class BaseAgent:
             print(f"  [Loop {iterations}/{max_iters}] Agent is thinking...")
 
             #  Build context from BOTH memories
-
-            # long_term_context = self.__long_term.get_context()
-            # short_term_context = self.__short_term.get_context()
-
-            #  Combine them into one prompt
-                    # In run() - replace the context building block
-            if self.__long_term is not None:
-                long_term_context = self.__long_term.get_context()
-                full_context = (
-                    f"Past Conversations:\n{long_term_context}\n\n"
-                    f"Current Session:\n{self.__short_term.get_context()}"
-                )
-            else:
-                full_context = f"Current Session:\n{self.__short_term.get_context()}"
+            full_context = self.__build_context()
                         
             # print("\n--- SYSTEM PROMPT ---")
             # print(self.config.system_prompt)
@@ -159,37 +125,71 @@ class BaseAgent:
             if "<tool_use>" in response:
                 tool_note = self.__handle_tool_call(response)
 
-                self.__short_term.add_entry(
-                    role="assistant",
-                    content=response
-                )
-                self.__short_term.add_entry(
-                    role="tool",
-                    content=tool_note
-                )
-                if self.__long_term is not None:
-                    self.__long_term.add_entry(role="assistant", content=response)
-                    self.__long_term.add_entry(role="tool", content=tool_note)
+                self.__save_memory(role="assistant", content=response)
+                self.__save_memory(role="tool", content=tool_note)
                 continue
 
              # Save to both memories
-            self.__short_term.add_entry(role="assistant", content=response)
-            if self.__long_term is not None:
-                self.__long_term.add_entry(role="assistant", content=response)
+            self.__save_memory(role="assistant", content=response)
             
             return response
         return f"[{self.name}] Error: Reached max iterations ({self.config.max_iterations}) without a final answer."
     
 
-    def __repr__(self) -> str:
-                return (
-                    f"BaseAgent(name='{self.name}', "
-                    f"tools={self.tools}, "
-                    f"stm={self.__short_term}, "
-                    f"ltm={'on' if self.__long_term is not None else 'off'})"
-                )
-    
+    # Fix clear_memory
+    def clear_memory(self) -> None:
+        self.__short_term.clear()
+        if self.__long_term is not None:
+            self.__long_term.clear()
+        print(f"[{self.name}] Memory cleared.")
+
+    def __save_memory(self, role: str, content: str) -> None:
+        """Helper to save a message to all active memories simultaneously."""
+        self.__short_term.add_entry(role=role, content=content)
+        if self.__long_term is not None:
+            self.__long_term.add_entry(role=role, content=content)
+
+    def __build_context(self) -> str:
+        """Helper to combine STM and LTM into the LLM's context window."""
+        stm_context = self.__short_term.get_context()
+        
+        if self.__long_term is not None:
+            ltm_context = self.__long_term.get_context()
+            return (
+                f"Past Conversations:\n{ltm_context}\n\n"
+                f"Current Session:\n{stm_context}"
+            )
+        return f"Current Session:\n{stm_context}"
+
+    def __build_system_prompt(self, base_prompt: str) -> str:
+        """Helper to inject tool schemas and strict XML rules into the prompt."""
+        # This is basically a prompt that tells the llm what tools it has
+        if not self.registry.list_tools():
+            return base_prompt
+
+        tool_schemas = self.registry.get_descriptions()
+        return (
+            f"{base_prompt}\n\n"
+            f"You have access to these tools:\n"
+            f"{tool_schemas}\n\n"
+            f"STRICT RULES:\n"
+            f"CRITICAL: Only use ONE tool per response. Wait for the tool result before taking your next step.\n"
+            f"1. Use ONE tool per response. No exceptions.\n"
+            f"2. After using a tool, Stop. wait for the result before continuing. Do not write anything else.\n"
+            f"3. If you use more than one tool in a single response, I will stop the conversation and you will fail the task.\n\n"
+            f"4. NEVER call the same or different tool twice in one response.\n"
+            f"5. You MUST use tools when the task requires them.\n\n"
+            f"To use a tool, respond EXACTLY in this XML format:\n\n"
+            f"<tool_use>\n"
+            f"  <tool_name>tool_name_here</tool_name>\n"
+            f"  <parameters>\n"
+            f"    <param_name>value here</param_name>\n"
+            f"  </parameters>\n"
+            f"</tool_use>"
+        )
+
     def __handle_tool_call(self, response: str) -> str:
+        """Helper to extract XML, find the tool, run it, and return the string result."""
         try:
             start = response.find("<tool_use>")
             end = response.find("</tool_use>") + len("</tool_use>")
@@ -197,7 +197,6 @@ class BaseAgent:
 
             root = ET.fromstring(xml_block)
 
-            # Extract tool name
             tool_name_el = root.find("tool_name")
             if tool_name_el is None:
                 return "Error: No tool_name found in XML."
@@ -211,12 +210,10 @@ class BaseAgent:
 
             print(f"  -> Tool: {tool_name} | Parameters: {parameters}")
 
-            # Fetch the tool from registry
             tool = self.registry.get_tool(tool_name)
             if not tool:
                 return f"Error: Unknown tool '{tool_name}'. Available: {self.registry.list_tools()}"
 
-            # Run the tool with the clean dictionary
             result = tool.run(parameters)
             return f"Tool '{tool_name}' returned: {result}"
 
@@ -225,10 +222,10 @@ class BaseAgent:
         except Exception as e:
             return f"Error during tool execution: {e}"
 
-
-    # Fix clear_memory
-    def clear_memory(self) -> None:
-        self.__short_term.clear()
-        if self.__long_term is not None:
-            self.__long_term.clear()
-        print(f"[{self.name}] Memory cleared.")
+    def __repr__(self) -> str:
+        return (
+            f"BaseAgent(name='{self.name}', "
+            f"tools={self.tools}, "
+            f"stm={self.__short_term}, "
+            f"ltm={'on' if self.__long_term is not None else 'off'})"
+        )
