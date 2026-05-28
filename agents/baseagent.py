@@ -107,7 +107,7 @@ class BaseAgent:
     def run(self, user_input: str) -> str:
 
         self.__short_term.add_entry(role="user", content= user_input)
-        if self.__long_term:
+        if self.__long_term is not None:
             self.__long_term.add_entry(role="user", content= user_input)
 
 
@@ -128,7 +128,7 @@ class BaseAgent:
 
             #  Combine them into one prompt
                     # In run() - replace the context building block
-            if self.__long_term:
+            if self.__long_term is not None:
                 long_term_context = self.__long_term.get_context()
                 full_context = (
                     f"Past Conversations:\n{long_term_context}\n\n"
@@ -167,14 +167,14 @@ class BaseAgent:
                     role="tool",
                     content=tool_note
                 )
-                if self.__long_term:
+                if self.__long_term is not None:
                     self.__long_term.add_entry(role="assistant", content=response)
                     self.__long_term.add_entry(role="tool", content=tool_note)
                 continue
 
              # Save to both memories
             self.__short_term.add_entry(role="assistant", content=response)
-            if self.__long_term:
+            if self.__long_term is not None:
                 self.__long_term.add_entry(role="assistant", content=response)
             
             return response
@@ -186,7 +186,7 @@ class BaseAgent:
                     f"BaseAgent(name='{self.name}', "
                     f"tools={self.tools}, "
                     f"stm={self.__short_term}, "
-                    f"ltm={'on' if self.__long_term else 'off'})"
+                    f"ltm={'on' if self.__long_term is not None else 'off'})"
                 )
     
     def __handle_tool_call(self, response: str) -> str:
@@ -229,6 +229,6 @@ class BaseAgent:
     # Fix clear_memory
     def clear_memory(self) -> None:
         self.__short_term.clear()
-        if self.__long_term:
+        if self.__long_term is not None:
             self.__long_term.clear()
         print(f"[{self.name}] Memory cleared.")

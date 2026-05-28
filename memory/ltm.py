@@ -31,11 +31,14 @@ class LongTermMemory(BaseMemory):
             self.__load_from_file(),
             maxlen=max_entries
         )
+        print(f"[LTM] Initialized. Will save to: {os.path.abspath(self.__file_path)}")
+
 
     def add_entry(self, role: str, content: str) -> None:
         """Add a message and immediately persist to disk."""
         self.__history.append({"role": role, "content": content})
         self.__save_to_file()
+        print(f"[LTM] Entry added. Total entries: {len(self.__history)}")
 
     def get_history(self) -> list[dict]:
         """Return a copy of history as a plain list."""
@@ -50,9 +53,11 @@ class LongTermMemory(BaseMemory):
         try:
             with open(self.__file_path, "w") as f:
                 json.dump(list(self.__history), f, indent=4)
+            print(f"[LTM] Saved to {os.path.abspath(self.__file_path)}")
         except Exception as e:
             print(f"Warning: Could not save memory. Error: {e}")
 
+            
     def __load_from_file(self) -> list:
         if not os.path.exists(self.__file_path):
             return []

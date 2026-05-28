@@ -4,7 +4,7 @@
 # from tools.filewriter import FileWriterTool
 # from tools.filereader import FileReaderTool
 # from agents.baseagent import BaseAgent
-from utils.terminal_chat import start_terminal_chat
+from utils.chat_ui import start_terminal_chat
 
 # if __name__ == "__main__":
 
@@ -60,8 +60,10 @@ if __name__ == "__main__":
         name="Agent1",
         llm=llm,
         system_prompt="You are a helpful assistant. Always use tools for math and files. Always use tools. Never try to solve any math eq internally",
-        tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool()]
+        tools=[CalculatorTool(), FileWriterTool(), FileReaderTool(),TerminalExecutorTool()],
+        use_ltm=True
         # tools=[CalculatorTool(),ProjectRunnerTool(),FileReaderTool()]
+
     )
 
     # Test multi-parameter tool call
@@ -74,7 +76,8 @@ if __name__ == "__main__":
     # and ask him yes for y and no for n
     # """)
     start_terminal_chat(agent)
-    print(f"Prompt: {agent.system_prompt}")
+    print(agent)
+    # print(f"Prompt: {agent.system_prompt}")
     # print("\nFinal Answer:")
     # print(response)
 
